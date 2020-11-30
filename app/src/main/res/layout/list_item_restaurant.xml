@@ -34,7 +34,7 @@
                         app:shapeAppearanceOverlay="@style/roundedImageView"
                         app:srcCompat="@drawable/ic_list" android:layout_height="match_parent"
                         android:layout_width="match_parent"
-                        android:background="#6A6868" android:id="@+id/restaurant_image"/>
+                        android:background="#6A6868" android:id="@+id/restaurant_image" android:scaleType="centerCrop"/>
                 <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"

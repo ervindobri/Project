@@ -46,12 +46,6 @@ class RestaurantListFragment : Fragment() {
     var isLastPage: Boolean = false
     var isLoading: Boolean = false
 
-    val restaurants = arrayListOf<RestaurantData>(
-            RestaurantData("Pizza", "Fast Food", "1000"),
-            RestaurantData("Spaghetti", "Italian", "557"),
-            RestaurantData("Mac n cheese", "American", "400")
-    )
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = "Restaurants"

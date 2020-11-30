@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.example.project.fragments.ProfileFragment
 import com.example.project.fragments.RestaurantListFragment
+import com.example.project.fragments.SplashFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {

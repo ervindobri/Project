@@ -14,7 +14,7 @@ data class RestaurantData(
     val city: String = "",
     val country: String = "",
     val id: Int = 0,
-    val image_url: String = "https://i.imgur.com/tGbaZCY.jpg",
+    val image_url: String = "https://www.elitetraveler.com/wp-content/uploads/2007/02/Caelis_Barcelona_alta2A0200-1-730x450.jpg",
     val lat: Double = 0.0,
     val lng: Double = 0.0,
     val mobile_reserve_url: String = "",

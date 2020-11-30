@@ -12,4 +12,6 @@
     <string name="restaurant_address">neverbelike street, nr.22</string>
     <string name="restaurant_price">$$$$</string>
     <string name="profile">Profile</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Where to eat?</string>
 </resources>

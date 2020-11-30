@@ -8,7 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.example.project.models.RestaurantData
+import jp.wasabeef.glide.transformations.BlurTransformation
 
 class RestaurantAdapter(
                             private val context: Context,
@@ -43,7 +45,10 @@ class RestaurantAdapter(
         holder.nameTextView.text = restaurant.name
         holder.addressTextView.text = restaurant.address
         holder.priceRangeTextView.text = restaurant.price.toString()
-        Glide.with(context).load(restaurant.image_url).into(holder.thumbnailImageView)
+        Glide.with(context)
+            .load("https://www.elitetraveler.com/wp-content/uploads/2007/02/Caelis_Barcelona_alta2A0200-1-730x450.jpg")
+            .apply(bitmapTransform(BlurTransformation(25, 3)))
+            .into(holder.thumbnailImageView)
     }
 
     private fun getItem(position: Int): Any {
