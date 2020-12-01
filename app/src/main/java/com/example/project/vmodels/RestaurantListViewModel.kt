@@ -20,7 +20,7 @@ class RestaurantListViewModel : ViewModel() {
             a.getName().compareTo(b.getName())
         }
 
-    lateinit var oldList : ArrayList<RestaurantData>
+    var oldList : ArrayList<RestaurantData> = ArrayList()
 
     fun filter(models: ArrayList<RestaurantData>, query: String): ArrayList<RestaurantData> {
         val lowerCaseQuery = query.toLowerCase(Locale.ROOT)

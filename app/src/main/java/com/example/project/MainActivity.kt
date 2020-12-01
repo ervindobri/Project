@@ -2,65 +2,63 @@ package com.example.project
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import br.com.mauker.materialsearchview.MaterialSearchView
 import com.allattentionhere.fabulousfilter.AAH_FabulousFragment
+import com.example.project.fragments.DetailFragment
 import com.example.project.fragments.ProfileFragment
 import com.example.project.fragments.RestaurantListFragment
+import com.example.project.models.RestaurantData
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), AAH_FabulousFragment.Callbacks {
+class MainActivity : AppCompatActivity() {
+    lateinit var detailFragment: DetailFragment
     lateinit var restaurantListFragmentFragment : RestaurantListFragment
     lateinit var profileFragment : ProfileFragment
+
+    private lateinit var navController : NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
+        navController = (supportFragmentManager.findFragmentById(R.id.navigationFragment) as NavHostFragment).navController
+        setupActionBarWithNavController(
+            navController,
+            AppBarConfiguration(setOf(R.id.restaurantListFragment, R.id.profileFragment))
+        )
+
         restaurantListFragmentFragment = RestaurantListFragment()
         profileFragment = ProfileFragment()
+        detailFragment = DetailFragment()
         title = resources.getString(R.string.list)
-        loadFragment(restaurantListFragmentFragment)
+        navigationView.setupWithNavController(navController)
 
-        navigationView.setOnNavigationItemSelectedListener {
-            when (it.itemId) {
-                R.id.navigation_list -> {
-                    loadFragment(restaurantListFragmentFragment)
-                    return@setOnNavigationItemSelectedListener true
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            when (destination.id) {
+                R.id.restaurantListFragment -> {
+                    navigationView.visibility = View.VISIBLE
                 }
 
-                R.id.navigation_profile -> {
-                    loadFragment(profileFragment)
-                    return@setOnNavigationItemSelectedListener true
+                R.id.profileFragment -> {
+                    navigationView.visibility = View.VISIBLE
                 }
-
+                else ->{
+                    navigationView.visibility = View.GONE
+                }
             }
-            false
-
-        }
-
-    }
-    private fun loadFragment(fragment: Fragment) {
-        // load fragment
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
-    override fun onResult(result: Any?) {
-        Log.d("tellmehow", "onResult: " + result.toString());
-        if (result.toString().equals("swiped_down", true)) {
-            //do something or nothing
-            Log.d("tellmehow", "equals: " + result.toString());
-
-        } else {
-            //handle result
-            Log.d("tellmehow", "nope: " + result.toString());
-
-
         }
     }
-
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp() || super.onSupportNavigateUp()
+    }
 }

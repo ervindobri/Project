@@ -19,21 +19,14 @@ class SplashScreenActivity : AppCompatActivity() {
     }
 
     private fun startMainActivity() {
-
-
         mRunnable = Runnable {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
-
         mHandler = Handler()
-
         mHandler.postDelayed(mRunnable, 4000)
     }
 
-    companion object {
-        private const val SPLASH_TIME_OUT = 3000
-    }
     override fun onStop() {
         super.onStop()
         mHandler.removeCallbacks(mRunnable)

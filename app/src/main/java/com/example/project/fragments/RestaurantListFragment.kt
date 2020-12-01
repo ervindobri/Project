@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.project.R
@@ -26,19 +27,11 @@ import com.example.project.vmodels.RestaurantListViewModel
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialFadeThrough
-import kotlinx.android.synthetic.main.restaurant_list_fragment.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener {
-
-
-    companion object {
-
-
-        fun newInstance() = RestaurantListFragment()
-    }
+class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener   {
 
     private var searchString: String = ""
     private lateinit var binding : RestaurantListFragmentBinding
@@ -82,17 +75,17 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener {
             override fun onResponse(call: Call<ResponseData>, response: Response<ResponseData>) {
                 if (response.isSuccessful) {
                     progressBar.visibility = View.GONE
-                    if (response.body()!!.total_entries >= adapter.itemCount)
-                    {
+                    if (response.body()!!.total_entries >= adapter.itemCount) {
                         var list = response.body()!!.restaurants
-                        if ( searchString != ""){
-                            list = viewModel.filter(response.body()!!.restaurants, searchString) as ArrayList<RestaurantData>
+                        if (searchString != "") {
+                            list = viewModel.filter(
+                                response.body()!!.restaurants,
+                                searchString
+                            ) as ArrayList<RestaurantData>
                         }
                         Log.d("counter", viewModel.currentPage.toString())
                         adapter.addMoreItems(list)
-                    }
-                    else
-                    {
+                    } else {
                         Toast.makeText(view?.context, "No more restaurants to load!", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -118,14 +111,14 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener {
 
         viewModel = ViewModelProvider(this).get(RestaurantListViewModel::class.java)
         viewModel.currentPage = 0
-        request = RetrofitClient.buildService(ApiEndpoints::class.java)
-        recyclerView = binding.restaurantList
         progressBar = binding.progressBar
         progressBarLayout = binding.progressLayout
         progressBarLayout.setVerticalGravity(Gravity.CENTER_VERTICAL)
         progressBarLayout.setHorizontalGravity(Gravity.CENTER_HORIZONTAL)
 
-        request.getRestaurants(viewModel.currentPage).enqueue(object : Callback<ResponseData> {
+        request = RetrofitClient.buildService(ApiEndpoints::class.java)
+        recyclerView = binding.root.findViewById(R.id.restaurantList)
+        request.getRestaurants(viewModel.currentPage).enqueue(object : Callback<ResponseData>, RestaurantAdapter.SelectedRestaurant {
             override fun onResponse(call: Call<ResponseData>, response: Response<ResponseData>) {
                 Log.d("logresponse", response.body().toString())
                 if (response.isSuccessful) {
@@ -134,23 +127,28 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener {
                     adapter = RestaurantAdapter(
                         binding.root.context,
                         viewModel.nameComparator,
+                        this
                     )
                     viewModel.oldList = response.body()!!.restaurants
                     adapter.addMoreItems(response.body()!!.restaurants)
                     recyclerView.adapter = adapter
-
                 }
             }
-
             override fun onFailure(call: Call<ResponseData>, t: Throwable) {
                 Toast.makeText(binding.root.context, "${t.message}", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun showDetails(restaurant: RestaurantData) {
+                findNavController().navigate(
+                    RestaurantListFragmentDirections.actionRestaurantListFragmentToDetailFragment(restaurant)
+                )
             }
         })
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         recyclerView.hasFixedSize()
+
         viewModel.currentPage++
         binding.filterLayout.visibility = View.GONE
-
         return binding.root
     }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -207,9 +205,6 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener {
         }
     }
 
-
-
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.search_menu, menu);
         val searchItem = menu.findItem(R.id.action_search)
@@ -239,6 +234,5 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener {
     override fun onQueryTextSubmit(query: String?): Boolean {
         return false
     }
-
 
 }

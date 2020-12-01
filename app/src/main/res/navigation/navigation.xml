@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/navigation"
+            app:startDestination="@id/restaurantListFragment">
+
+    <fragment android:id="@+id/detailFragment" android:name="com.example.project.fragments.DetailFragment"
+              android:label="detail_fragment" tools:layout="@layout/detail_fragment">
+        <argument android:name="restaurant" app:argType="com.example.project.models.RestaurantData"/>
+    </fragment>
+    <fragment android:id="@+id/restaurantListFragment"
+              android:name="com.example.project.fragments.RestaurantListFragment"
+              android:label="restaurant_list_fragment" tools:layout="@layout/restaurant_list_fragment">
+        <action android:id="@+id/action_restaurantListFragment_to_detailFragment" app:destination="@id/detailFragment"/>
+    </fragment>
+    <fragment android:id="@+id/profileFragment" android:name="com.example.project.fragments.ProfileFragment"
+              android:label="profile_fragment" tools:layout="@layout/profile_fragment"/>
+</navigation>

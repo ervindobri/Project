@@ -1,5 +1,7 @@
 package com.example.project.models
 
+import java.io.Serializable
+
 data class ResponseData(
     val total_entries: Int,
     val per_page: Int,
@@ -31,7 +33,7 @@ data class RestaurantData(
     val reserve_url: String = "",
     val state: String = ""
 
-) {
+) : Serializable {
     @JvmName("getId1")
     fun getId() :Int {
         return id

@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
 import com.bumptech.glide.Glide
@@ -16,8 +18,14 @@ import jp.wasabeef.glide.transformations.BlurTransformation
 
 class RestaurantAdapter(
     private val context: Context,
-    comparator: Comparator<RestaurantData>
-) : RecyclerView.Adapter<RestaurantAdapter.ViewHolder>() {
+    comparator: Comparator<RestaurantData>,
+    private var selectedRestaurant: SelectedRestaurant
+) : RecyclerView.Adapter<RestaurantAdapter.ViewHolder>(){
+
+    public interface SelectedRestaurant {
+        fun showDetails(restaurant: RestaurantData)
+    }
+
     private val inflater: LayoutInflater
             = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
@@ -53,26 +61,33 @@ class RestaurantAdapter(
         })
     private val mComparator: Comparator<RestaurantData> = comparator
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View):  RecyclerView.ViewHolder(itemView) {
         lateinit var nameTextView: TextView
         lateinit var addressTextView: TextView
         lateinit var priceRangeTextView: TextView
         lateinit var thumbnailImageView: ImageView
+
+        lateinit var card : CardView
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestaurantAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = inflater.inflate(R.layout.list_item_restaurant, parent, false)
 
-        val holder = RestaurantAdapter.ViewHolder(view)
+        val holder = ViewHolder(view)
         holder.thumbnailImageView = view.findViewById(R.id.restaurant_image) as ImageView
         holder.nameTextView = view.findViewById(R.id.restaurant_name) as TextView
         holder.addressTextView = view.findViewById(R.id.restaurant_address) as TextView
         holder.priceRangeTextView = view.findViewById(R.id.restaurant_price) as TextView
+        holder.card = view.findViewById(R.id.restaurantCard)
+        holder.card.setOnClickListener(View.OnClickListener {
+//            selectedRestaurant.showDetails(holder.itemView.)
+            Log.d("message", "onCREATE")
 
+        })
         return holder
     }
 
-    override fun onBindViewHolder(holder: RestaurantAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         // 1
         val restaurant = getItem(position) as RestaurantData
 
@@ -83,6 +98,11 @@ class RestaurantAdapter(
             .load("https://www.elitetraveler.com/wp-content/uploads/2007/02/Caelis_Barcelona_alta2A0200-1-730x450.jpg")
             .apply(bitmapTransform(BlurTransformation(25, 3)))
             .into(holder.thumbnailImageView)
+
+        holder.card.setOnClickListener { v ->
+            Log.d("message", "Clicked!")
+            selectedRestaurant.showDetails(restaurant)
+        }
     }
 
     private fun selectPriceRange(price: Int): CharSequence {
@@ -115,6 +135,7 @@ class RestaurantAdapter(
         }
         mSortedList.addAll(models)
         mSortedList.endBatchedUpdates()
+        notifyDataSetChanged()
     }
 
     fun addMoreItems(list: ArrayList<RestaurantData>){
@@ -127,5 +148,6 @@ class RestaurantAdapter(
     fun getItems(): SortedList<RestaurantData> {
         return mSortedList
     }
+
 
 }
