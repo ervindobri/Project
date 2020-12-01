@@ -14,4 +14,7 @@
     <string name="profile">Profile</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Where to eat?</string>
+    <string name="action_search">Search restaurants...</string>
+    <string name="filters">Filters</string>
+    <string name="apply">Apply</string>
 </resources>

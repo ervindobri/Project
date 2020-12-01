@@ -5,7 +5,13 @@ data class ResponseData(
     val per_page: Int,
     val current_page: Int,
     val restaurants: ArrayList<RestaurantData>
-)
+
+
+) {
+    override fun toString(): String {
+        return "ResponseData(total_entries=$total_entries, per_page=$per_page, current_page=$current_page, restaurants=${restaurants.size})"
+    }
+}
 
 
 data class RestaurantData(
@@ -25,9 +31,17 @@ data class RestaurantData(
     val reserve_url: String = "",
     val state: String = ""
 
-
 ) {
+    @JvmName("getId1")
+    fun getId() :Int {
+        return id
+    }
     override fun toString(): String {
         return "RestaurantData(address='$address', area='$area', city='$city', country='$country', id=$id, image_url='$image_url', lat=$lat, lng=$lng, mobile_reserve_url='$mobile_reserve_url', name='$name', phone='$phone', postal_code='$postal_code', price=$price, reserve_url='$reserve_url', state='$state')"
+    }
+
+    @JvmName("getName1")
+    fun getName(): String {
+        return name
     }
 }

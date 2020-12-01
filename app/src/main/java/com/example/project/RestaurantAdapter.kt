@@ -7,17 +7,51 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SortedList
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.example.project.models.RestaurantData
 import jp.wasabeef.glide.transformations.BlurTransformation
 
+
 class RestaurantAdapter(
-                            private val context: Context,
-                            private val dataSource: ArrayList<RestaurantData>
+    private val context: Context,
+    comparator: Comparator<RestaurantData>
 ) : RecyclerView.Adapter<RestaurantAdapter.ViewHolder>() {
     private val inflater: LayoutInflater
             = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+    private val mSortedList: SortedList<RestaurantData> =
+        SortedList(RestaurantData::class.java, object : SortedList.Callback<RestaurantData>() {
+            override fun compare(a: RestaurantData, b: RestaurantData): Int {
+                return mComparator.compare(a, b)
+            }
+
+            override fun onInserted(position: Int, count: Int) {
+                notifyItemRangeInserted(position, count)
+            }
+
+            override fun onRemoved(position: Int, count: Int) {
+                notifyItemRangeRemoved(position, count)
+            }
+
+            override fun onMoved(fromPosition: Int, toPosition: Int) {
+                notifyItemMoved(fromPosition, toPosition)
+            }
+
+            override fun onChanged(position: Int, count: Int) {
+                notifyItemRangeChanged(position, count)
+            }
+
+            override fun areContentsTheSame(oldItem: RestaurantData, newItem: RestaurantData): Boolean {
+                return oldItem.equals(newItem)
+            }
+
+            override fun areItemsTheSame(item1: RestaurantData, item2: RestaurantData): Boolean {
+                return item1.getId() == item2.getId()
+            }
+        })
+    private val mComparator: Comparator<RestaurantData> = comparator
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         lateinit var nameTextView: TextView
@@ -44,24 +78,54 @@ class RestaurantAdapter(
 
         holder.nameTextView.text = restaurant.name
         holder.addressTextView.text = restaurant.address
-        holder.priceRangeTextView.text = restaurant.price.toString()
+        holder.priceRangeTextView.text = selectPriceRange(restaurant.price)
         Glide.with(context)
             .load("https://www.elitetraveler.com/wp-content/uploads/2007/02/Caelis_Barcelona_alta2A0200-1-730x450.jpg")
             .apply(bitmapTransform(BlurTransformation(25, 3)))
             .into(holder.thumbnailImageView)
     }
 
+    private fun selectPriceRange(price: Int): CharSequence {
+        when (price) {
+            1 -> return "$"
+            2 -> return "$$"
+            3 -> return "$$$"
+            4 -> return "$$$$"
+            else -> {
+                return "$"
+            }
+        }
+    }
+
     private fun getItem(position: Int): Any {
-        return dataSource[position]
+        return mSortedList[position]
     }
 
     override fun getItemCount(): Int {
-        return dataSource.size
+        return mSortedList.size()
     }
 
-    fun addMoreItems(list : ArrayList<RestaurantData>){
-        dataSource += list;
-        Log.d("bla","ADDED! ${dataSource.size}")
+    fun replaceItems(models: ArrayList<RestaurantData>){
+        mSortedList.beginBatchedUpdates()
+        for (i in mSortedList.size() - 1 downTo 0) {
+            val model: RestaurantData = mSortedList[i]
+            if (!models.contains(model)) {
+                mSortedList.remove(model)
+            }
+        }
+        mSortedList.addAll(models)
+        mSortedList.endBatchedUpdates()
+    }
+
+    fun addMoreItems(list: ArrayList<RestaurantData>){
+        mSortedList.beginBatchedUpdates()
+        mSortedList.addAll(list)
+        mSortedList.endBatchedUpdates()
         notifyDataSetChanged()
     }
+
+    fun getItems(): SortedList<RestaurantData> {
+        return mSortedList
+    }
+
 }
