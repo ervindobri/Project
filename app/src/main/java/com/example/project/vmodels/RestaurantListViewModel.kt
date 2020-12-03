@@ -6,6 +6,7 @@ import com.example.project.models.RestaurantData
 import java.util.*
 import kotlin.Comparator
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class RestaurantListViewModel : ViewModel() {
     private var PAGE_START : Int = 0;
@@ -34,4 +35,31 @@ class RestaurantListViewModel : ViewModel() {
         return filteredModelList
     }
 
+
+    var countryMap : MutableMap<String,String> = hashMapOf(
+
+            "AE" to "United Arab Emirates",
+            "AW" to "Aruba",
+            "CA" to "Canada",
+            "CH" to  "Switzerland" ,
+            "CN" to  "China" ,
+            "CR" to  "Costa Rica",
+            "HK" to  "Hong Kong" ,
+            "KN" to  "Saint Kitts and Nevis"  ,
+             "KY" to  "Cayman Islands" ,
+             "MC" to  "Monaco" ,
+             "MO" to  "Macao" ,
+             "MX" to  "Mexico" ,
+             "MY" to  "Malaysia" ,
+             "PT" to  "Portugal" ,
+             "SA" to  "Saudi Arabia" ,
+             "SG" to  "Singapore" ,
+             "SV" to  "El Salvador" ,
+             "US" to  "United States" ,
+             "VI" to  "Virgin Islands,US"
+    )
+    init {
+        currentPage = 0
+
+    }
 }

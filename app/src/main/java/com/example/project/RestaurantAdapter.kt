@@ -93,7 +93,7 @@ class RestaurantAdapter(
 
         holder.nameTextView.text = restaurant.name
         holder.addressTextView.text = restaurant.address
-        holder.priceRangeTextView.text = selectPriceRange(restaurant.price)
+        holder.priceRangeTextView.text = restaurant.priceRange()
         Glide.with(context)
             .load("https://www.elitetraveler.com/wp-content/uploads/2007/02/Caelis_Barcelona_alta2A0200-1-730x450.jpg")
             .apply(bitmapTransform(BlurTransformation(25, 3)))
@@ -103,18 +103,7 @@ class RestaurantAdapter(
             Log.d("message", "Clicked!")
             selectedRestaurant.showDetails(restaurant)
         }
-    }
 
-    private fun selectPriceRange(price: Int): CharSequence {
-        when (price) {
-            1 -> return "$"
-            2 -> return "$$"
-            3 -> return "$$$"
-            4 -> return "$$$$"
-            else -> {
-                return "$"
-            }
-        }
     }
 
     private fun getItem(position: Int): Any {

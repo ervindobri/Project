@@ -9,6 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.example.project.vmodels.ProfileViewModel
 import com.example.project.R
+import com.google.android.material.transition.platform.MaterialFade
+import com.google.android.material.transition.platform.MaterialFadeThrough
+import com.google.android.material.transition.platform.MaterialSharedAxis
 
 class ProfileFragment : Fragment() {
 
@@ -22,6 +25,15 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false).apply {
+            duration = 80L
+        }
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false).apply {
+            duration = 80L
+        }
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false).apply {
+            duration = 80L
+        }
         return inflater.inflate(R.layout.profile_fragment, container, false)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

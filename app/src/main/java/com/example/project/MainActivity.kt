@@ -21,7 +21,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     lateinit var detailFragment: DetailFragment
-    lateinit var restaurantListFragmentFragment : RestaurantListFragment
     lateinit var profileFragment : ProfileFragment
 
     private lateinit var navController : NavController
@@ -37,12 +36,10 @@ class MainActivity : AppCompatActivity() {
             AppBarConfiguration(setOf(R.id.restaurantListFragment, R.id.profileFragment))
         )
 
-        restaurantListFragmentFragment = RestaurantListFragment()
         profileFragment = ProfileFragment()
         detailFragment = DetailFragment()
         title = resources.getString(R.string.list)
         navigationView.setupWithNavController(navController)
-
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             when (destination.id) {
                 R.id.restaurantListFragment -> {

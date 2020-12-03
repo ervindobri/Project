@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Where to Eat?</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_list_fragment">List of foods</string>
     <string name="hello_add_fragment">Add new Food</string>
     <string name="hello_info_fragment">Information</string>
@@ -12,9 +11,13 @@
     <string name="restaurant_address">neverbelike street, nr.22</string>
     <string name="restaurant_price">$$$$</string>
     <string name="profile">Profile</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Where to eat?</string>
-    <string name="action_search">Search restaurants...</string>
+    <string name="action_search">Search restaurants…</string>
     <string name="filters">Filters</string>
     <string name="apply">Apply</string>
+    <string name="actions">Actions</string>
+    <string name="filter_price_range">Price Range</string>
+    <string name="filter_address">Address</string>
+    <string name="filter_state">State</string>
+    <string name="filter_country">Country</string>
 </resources>

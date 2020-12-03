@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.transition.TransitionManager
 import android.util.Log
 import android.view.*
-import android.widget.LinearLayout
-import android.widget.SearchView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -24,14 +22,17 @@ import com.example.project.models.ResponseData
 import com.example.project.models.RestaurantData
 import com.example.project.models.RetrofitClient
 import com.example.project.vmodels.RestaurantListViewModel
+import com.google.android.material.chip.Chip
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialFadeThrough
+import com.google.android.material.transition.platform.MaterialSharedAxis
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener   {
+
+class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, RestaurantAdapter.SelectedRestaurant {
 
     private var searchString: String = ""
     private lateinit var binding : RestaurantListFragmentBinding
@@ -67,7 +68,9 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener   {
             }
         })
         setClickListeners()
-
+//        binding.priceGroup.setOnCheckedChangeListener { group, checkedId -> binding.priceGroup.check(checkedId)
+//
+//        }
     }
 
     private fun getMoreItems() {
@@ -105,12 +108,33 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener   {
     ): View {
 //        val view: View = inflater.inflate(R.layout.restaurant_list_fragment, container, false)
         binding = RestaurantListFragmentBinding.inflate(inflater, container, false)
+        viewModel = ViewModelProvider(this).get(RestaurantListViewModel::class.java)
 
         setHasOptionsMenu(true);
         enterTransition = MaterialFadeThrough()
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false).apply {
+            duration = 80L
+        }
 
-        viewModel = ViewModelProvider(this).get(RestaurantListViewModel::class.java)
-        viewModel.currentPage = 0
+        for (i in 1..4){
+            val chip = inflater.inflate(R.layout.item_chip_choice, binding.priceGroup, false) as Chip
+            chip.text = "$".repeat(i)
+            chip.setId(i);
+            chip.setTag(i);
+            chip.setCheckable(true);
+            binding.priceGroup.addView(chip)
+        }
+        binding.priceGroup.check(1)
+
+
+        val cadapter = ArrayAdapter(
+            context!!,
+            R.layout.country_menu_item,
+            viewModel.countryMap.toList()
+        )
+        val editTextFilledExposedDropdown: AutoCompleteTextView = binding.filledExposedDropdown
+        editTextFilledExposedDropdown.setAdapter(cadapter)
+
         progressBar = binding.progressBar
         progressBarLayout = binding.progressLayout
         progressBarLayout.setVerticalGravity(Gravity.CENTER_VERTICAL)
@@ -118,7 +142,8 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener   {
 
         request = RetrofitClient.buildService(ApiEndpoints::class.java)
         recyclerView = binding.root.findViewById(R.id.restaurantList)
-        request.getRestaurants(viewModel.currentPage).enqueue(object : Callback<ResponseData>, RestaurantAdapter.SelectedRestaurant {
+        request.getRestaurants(viewModel.currentPage).enqueue(object : Callback<ResponseData>,
+            RestaurantAdapter.SelectedRestaurant {
             override fun onResponse(call: Call<ResponseData>, response: Response<ResponseData>) {
                 Log.d("logresponse", response.body().toString())
                 if (response.isSuccessful) {
@@ -134,6 +159,7 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener   {
                     recyclerView.adapter = adapter
                 }
             }
+
             override fun onFailure(call: Call<ResponseData>, t: Throwable) {
                 Toast.makeText(binding.root.context, "${t.message}", Toast.LENGTH_SHORT).show()
             }
@@ -154,6 +180,8 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener   {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(RestaurantListViewModel::class.java)
+        adapter = RestaurantAdapter(view!!.context, viewModel.nameComparator, this)
+        recyclerView.adapter = adapter
     }
 
     private fun buildContainerTransformation() =
@@ -166,7 +194,9 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener   {
 
 
     private fun setClickListeners() {
-
+//        binding.filterCardd.setOnClickListener{
+//            Log.d("filter", "Filtering!")
+//        }
         binding.fabHome.setOnClickListener {
             val transition = buildContainerTransformation()
             transition.startView = binding.fabHome
@@ -233,6 +263,12 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener   {
 
     override fun onQueryTextSubmit(query: String?): Boolean {
         return false
+    }
+
+    override fun showDetails(restaurant: RestaurantData) {
+        findNavController().navigate(
+            RestaurantListFragmentDirections.actionRestaurantListFragmentToDetailFragment(restaurant)
+        )
     }
 
 }

@@ -34,6 +34,16 @@ data class RestaurantData(
     val state: String = ""
 
 ) : Serializable {
+    fun priceRange(): String {
+        return when (price) {
+            1 -> "$"
+            2 -> "$$"
+            3 -> "$$$"
+            4 -> "$$$$"
+            else -> "$"
+        }
+    }
+
     @JvmName("getId1")
     fun getId() :Int {
         return id
