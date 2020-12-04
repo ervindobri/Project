@@ -23,7 +23,7 @@ class RestaurantAdapter(
     private var selectedRestaurant: SelectedRestaurant
 ) : RecyclerView.Adapter<RestaurantAdapter.ViewHolder>(){
 
-    public interface SelectedRestaurant {
+    interface SelectedRestaurant {
         fun showDetails(restaurant: RestaurantData)
     }
 
@@ -134,7 +134,7 @@ class RestaurantAdapter(
         mSortedList.addAll(list)
         Log.d("size", mSortedList.size().toString())
 //        mSortedList.endBatchedUpdates()
-//        notifyDataSetChanged()
+        notifyDataSetChanged()
     }
 
     fun getItems(): SortedList<RestaurantData> {

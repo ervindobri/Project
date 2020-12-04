@@ -2,8 +2,10 @@ package com.example.project.vmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.SortedList
+import com.example.project.models.ApiEndpoints
 import com.example.project.models.ResponseData
 import com.example.project.models.RestaurantData
+import com.example.project.models.RetrofitClient
 import java.util.*
 import kotlin.Comparator
 import kotlin.collections.ArrayList
@@ -11,6 +13,11 @@ import kotlin.collections.HashMap
 
 class RestaurantListViewModel : ViewModel() {
     val standardCountry: String = "MX"
+
+    val request = RetrofitClient.buildService(ApiEndpoints::class.java)
+
+    var searchString: String = ""
+
     var position: Int = 0
     private var PAGE_START : Int = 0;
     var currentPage = PAGE_START

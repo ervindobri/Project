@@ -9,7 +9,7 @@
 
     <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent" app:layout_constraintStart_toStartOf="parent"
+            android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -19,7 +19,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/linearLayout"
-                android:gravity="bottom" android:layout_gravity="bottom">
+                android:gravity="bottom|top" android:layout_gravity="bottom|top">
             <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" app:cardCornerRadius="25dp" app:cardElevation="15dp"
@@ -35,13 +35,13 @@
                             android:layout_height="170dp"
                             android:background="@drawable/rounded_image"
                             android:id="@+id/restaurantImage" android:scaleType="centerCrop" android:layout_weight="0"
-                            android:maxHeight="200dp" android:alpha="1" app:srcCompat="@drawable/refs"
+                            android:maxHeight="170dp" android:alpha="1" app:srcCompat="@drawable/refs"
                             android:contentDescription="TODO"/>
                     <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" android:layout_marginTop="25dp"
-                            android:layout_marginEnd="15dp" android:layout_marginStart="15dp"
+                            android:layout_marginEnd="5dp" android:layout_marginStart="5dp"
                             android:layout_marginBottom="15dp" android:baselineAligned="false">
                         <LinearLayout
                                 android:orientation="vertical"
@@ -51,6 +51,10 @@
                             <TextView
                                     android:text="TextView"
                                     android:layout_width="wrap_content"
+                                    android:autoSizeTextType="uniform"
+                                    android:autoSizeMinTextSize="16sp"
+                                    android:autoSizeMaxTextSize="18sp"
+                                    android:autoSizeStepGranularity="2sp"
                                     android:layout_height="wrap_content" android:id="@+id/nameView"
                                     android:layout_weight="0" android:fontFamily="@font/raleway_bold"
                                     android:textSize="24sp"
@@ -58,11 +62,19 @@
                             <TextView
                                     android:text="TextView"
                                     android:layout_width="wrap_content"
+                                    android:autoSizeTextType="uniform"
+                                    android:autoSizeMinTextSize="10sp"
+                                    android:autoSizeMaxTextSize="14sp"
+                                    android:autoSizeStepGranularity="2sp"
                                     android:layout_height="wrap_content" android:id="@+id/addressView"
                                     android:layout_weight="0" android:fontFamily="@font/raleway_semibold"
                                     android:textColor="#393939" android:maxWidth="150dp"/>
                             <TextView
                                     android:text="Spain"
+                                    android:autoSizeTextType="uniform"
+                                    android:autoSizeMinTextSize="8sp"
+                                    android:autoSizeMaxTextSize="10sp"
+                                    android:autoSizeStepGranularity="2sp"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content" android:id="@+id/cityView"
                                     android:layout_weight="0" android:fontFamily="@font/raleway_thin"
@@ -72,13 +84,15 @@
                                 android:orientation="vertical"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:gravity="center_horizontal|top" android:layout_marginStart="10dp">
+                                android:gravity="center_horizontal|top" android:layout_marginStart="10dp"
+                                android:minWidth="100dp" android:layout_marginTop="15dp"
+                                android:layout_marginEnd="10dp">
                             <TextView
                                     android:text="$$$$"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content" android:id="@+id/priceRangeView"
                                     android:layout_weight="0"
-                                    android:layout_margin="15dp" android:fontFamily="@font/raleway_black"
+                                    android:layout_margin="10dp" android:fontFamily="@font/raleway_black"
                                     android:textSize="30sp"/>
                         </LinearLayout>
                     </LinearLayout>
