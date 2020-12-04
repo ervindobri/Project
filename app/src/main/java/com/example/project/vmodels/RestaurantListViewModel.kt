@@ -2,6 +2,7 @@ package com.example.project.vmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.SortedList
+import com.example.project.models.ResponseData
 import com.example.project.models.RestaurantData
 import java.util.*
 import kotlin.Comparator
@@ -9,12 +10,16 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class RestaurantListViewModel : ViewModel() {
+    val standardCountry: String = "MX"
+    var position: Int = 0
     private var PAGE_START : Int = 0;
     var currentPage = PAGE_START
-
     var isLastPage: Boolean = false
+
     var isLoading: Boolean = false
 
+    var filtering : Boolean = false
+    var filters: List<String> = listOf()
 
     val nameComparator: Comparator<RestaurantData> =
         Comparator<RestaurantData> { a, b ->
@@ -23,6 +28,7 @@ class RestaurantListViewModel : ViewModel() {
 
     var oldList : ArrayList<RestaurantData> = ArrayList()
 
+    lateinit var lastResponse : ResponseData
     fun filter(models: ArrayList<RestaurantData>, query: String): ArrayList<RestaurantData> {
         val lowerCaseQuery = query.toLowerCase(Locale.ROOT)
         val filteredModelList: ArrayList<RestaurantData> = ArrayList()
@@ -60,6 +66,6 @@ class RestaurantListViewModel : ViewModel() {
     )
     init {
         currentPage = 0
-
+        filtering = false
     }
 }

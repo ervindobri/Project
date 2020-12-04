@@ -1,11 +1,14 @@
 package com.example.project.fragments
 
 import PaginationScrollListener
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Parcelable
 import android.transition.TransitionManager
 import android.util.Log
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -34,6 +37,7 @@ import retrofit2.Response
 
 class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, RestaurantAdapter.SelectedRestaurant {
 
+    private lateinit var recyclerViewState: Parcelable
     private var searchString: String = ""
     private lateinit var binding : RestaurantListFragmentBinding
     private lateinit var searchView: SearchView
@@ -51,6 +55,7 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
 
         val your_layoutManager = recyclerView.layoutManager;
         recyclerView.addOnScrollListener(object : PaginationScrollListener(your_layoutManager as LinearLayoutManager) {
+
             override fun isLastPage(): Boolean {
                 return viewModel.isLastPage
             }
@@ -60,25 +65,29 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
             }
 
             override fun loadMoreItems() {
-                viewModel.isLoading = true
-                progressBar.visibility = View.VISIBLE
-                Log.d("bla", "LOADING MORE ITEMS")
-                //you have to call load more items to get more data
-                getMoreItems()
+                if( viewModel.lastResponse.total_entries > adapter.itemCount){
+                    viewModel.isLoading = true
+                    progressBar.visibility = View.VISIBLE
+                    Log.d("bla", "LOADING MORE ITEMS")
+                    //you have to call load more items to get more data
+                    getMoreItems()
+                }
+
             }
         })
         setClickListeners()
-//        binding.priceGroup.setOnCheckedChangeListener { group, checkedId -> binding.priceGroup.check(checkedId)
-//
-//        }
     }
 
+    //TODO: refactor api call
+    //TODO: fix filter layout
+
     private fun getMoreItems() {
-        request.getRestaurants(viewModel.currentPage).enqueue(object : Callback<ResponseData> {
+        request.filterRestaurants(viewModel.standardCountry,null,null,null,null,viewModel.currentPage).enqueue(object : Callback<ResponseData> {
             override fun onResponse(call: Call<ResponseData>, response: Response<ResponseData>) {
                 if (response.isSuccessful) {
                     progressBar.visibility = View.GONE
                     if (response.body()!!.total_entries >= adapter.itemCount) {
+                        viewModel.lastResponse = response.body()!!
                         var list = response.body()!!.restaurants
                         if (searchString != "") {
                             list = viewModel.filter(
@@ -99,6 +108,7 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
             }
         })
         viewModel.currentPage++
+        recyclerView.scrollToPosition(0) //loading too many items quickfix
         viewModel.isLoading = false
     }
 
@@ -109,7 +119,7 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
 //        val view: View = inflater.inflate(R.layout.restaurant_list_fragment, container, false)
         binding = RestaurantListFragmentBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this).get(RestaurantListViewModel::class.java)
-
+        viewModel.currentPage=0
         setHasOptionsMenu(true);
         enterTransition = MaterialFadeThrough()
         reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false).apply {
@@ -130,7 +140,7 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
         val cadapter = ArrayAdapter(
             context!!,
             R.layout.country_menu_item,
-            viewModel.countryMap.toList()
+            viewModel.countryMap.toList().map { it.second }
         )
         val editTextFilledExposedDropdown: AutoCompleteTextView = binding.filledExposedDropdown
         editTextFilledExposedDropdown.setAdapter(cadapter)
@@ -142,11 +152,151 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
 
         request = RetrofitClient.buildService(ApiEndpoints::class.java)
         recyclerView = binding.root.findViewById(R.id.restaurantList)
-        request.getRestaurants(viewModel.currentPage).enqueue(object : Callback<ResponseData>,
+        if ( this::recyclerViewState.isInitialized ){
+            recyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState);
+            Log.d("recyclerview", "SAved instance!")
+        }
+        else{
+            request.filterRestaurants(viewModel.standardCountry,null,null,null,null,viewModel.currentPage).enqueue(object : Callback<ResponseData>,
+                RestaurantAdapter.SelectedRestaurant {
+                override fun onResponse(call: Call<ResponseData>, response: Response<ResponseData>) {
+                    Log.d("logresponse", response.body().toString())
+                    if (response.isSuccessful) {
+                        viewModel.lastResponse = response.body()!!
+                        progressBarLayout.setVerticalGravity(Gravity.BOTTOM)
+                        progressBar.visibility = View.GONE
+                        adapter = RestaurantAdapter(
+                            binding.root.context,
+                            viewModel.nameComparator,
+                            this
+                        )
+                        viewModel.oldList = response.body()!!.restaurants
+                        adapter.addMoreItems(response.body()!!.restaurants)
+                        recyclerView.adapter = adapter
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseData>, t: Throwable) {
+                    Toast.makeText(binding.root.context, "${t.message}", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun showDetails(restaurant: RestaurantData) {
+                    findNavController().navigate(
+                        RestaurantListFragmentDirections.actionRestaurantListFragmentToDetailFragment(restaurant)
+                    )
+                }
+            })
+            viewModel.currentPage++
+        }
+        recyclerView.layoutManager = LinearLayoutManager(this.context)
+        recyclerView.hasFixedSize()
+        binding.filterLayout.visibility = View.GONE
+
+        return binding.root
+    }
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(RestaurantListViewModel::class.java)
+        adapter = RestaurantAdapter(view!!.context, viewModel.nameComparator, this)
+        recyclerView.adapter = adapter
+    }
+
+    private fun buildContainerTransformation() =
+        MaterialContainerTransform().apply {
+            scrimColor = Color.TRANSPARENT
+            duration = 300
+            interpolator = FastOutSlowInInterpolator()
+            fadeMode = MaterialContainerTransform.FADE_MODE_IN
+        }
+
+
+//   TODO:display current filters on top of list
+
+    private fun setClickListeners() {
+        binding.fabHome.setOnClickListener {
+            //Load back current filters if there are
+            if ( viewModel.filters.isNotEmpty()){
+                binding.priceGroup.check(viewModel.filters[1].toInt())
+                binding.addressTextField.editText?.setText(viewModel.filters[2])
+                binding.cityTextField.editText?.setText(viewModel.filters[3])
+                binding.zipCodeTextField.editText?.setText(viewModel.filters[4])
+            }
+
+
+            val transition = buildContainerTransformation()
+            transition.startView = binding.fabHome
+            transition.endView = binding.filterLayout
+            transition.addTarget(binding.filterLayout)
+
+            TransitionManager.beginDelayedTransition(binding.root, transition)
+            binding.filterLayout.visibility = View.VISIBLE
+            binding.fabHome.visibility = View.INVISIBLE
+        }
+        binding.closeFilters.setOnClickListener{
+            val transition = buildContainerTransformation()
+            transition.startView = binding.filterLayout
+            transition.endView = binding.fabHome
+
+            transition.addTarget(binding.fabHome)
+
+            TransitionManager.beginDelayedTransition(binding.root, transition)
+            binding.filterLayout.visibility = View.GONE
+            binding.fabHome.visibility = View.VISIBLE
+        }
+        binding.applyFilters.setOnClickListener{
+            //Apply filters
+            //TODO: APPLY FILTERS
+            Log.d("filters", (binding.priceGroup.checkedChipId.toString() + ", "
+                    + binding.filledExposedDropdown.text + ", "
+                    + binding.cityTextField.editText?.text.toString() + ", "
+                    + binding.addressTextField.editText?.text.toString()
+                    )
+            )
+            val filters = listOf<String>(
+                binding.filledExposedDropdown.text.toString(), //country
+                binding.priceGroup.checkedChipId.toString(), //price
+                binding.addressTextField.editText?.text.toString(), //address
+                binding.cityTextField.editText?.text.toString(), //city
+                binding.zipCodeTextField.editText?.text.toString() //zip code
+            )
+            Log.d("filtersize", filters.size.toString())
+            viewModel.filters = filters
+            viewModel.filtering = true
+            viewModel.currentPage = 0
+            getFilteredItems();
+            binding.root.hideKeyboard()
+            //Transition
+            val transition = buildContainerTransformation()
+            transition.startView = binding.filterLayout
+            transition.endView = binding.fabHome
+            transition.addTarget(binding.fabHome)
+
+            TransitionManager.beginDelayedTransition(binding.root, transition)
+            binding.filterLayout.visibility = View.GONE
+            binding.fabHome.visibility = View.VISIBLE
+        }
+    }
+
+    fun View.hideKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
+    }
+
+    private fun getFilteredItems() {
+        request.filterRestaurants(
+            viewModel.countryMap.filterValues { it == viewModel.filters[0] }.keys.first(), //country
+            viewModel.filters[1].toInt(),  //price
+            viewModel.filters[2], //address
+            viewModel.filters[3], //city
+            if ( viewModel.filters[4] != "") viewModel.filters[4].toInt() else null, //zipcode,
+            viewModel.currentPage
+        ).enqueue(object : Callback<ResponseData>,
             RestaurantAdapter.SelectedRestaurant {
             override fun onResponse(call: Call<ResponseData>, response: Response<ResponseData>) {
                 Log.d("logresponse", response.body().toString())
                 if (response.isSuccessful) {
+                    viewModel.lastResponse = response.body()!!
+
                     progressBarLayout.setVerticalGravity(Gravity.BOTTOM)
                     progressBar.visibility = View.GONE
                     adapter = RestaurantAdapter(
@@ -170,69 +320,7 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
                 )
             }
         })
-        recyclerView.layoutManager = LinearLayoutManager(this.context)
-        recyclerView.hasFixedSize()
-
         viewModel.currentPage++
-        binding.filterLayout.visibility = View.GONE
-        return binding.root
-    }
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(RestaurantListViewModel::class.java)
-        adapter = RestaurantAdapter(view!!.context, viewModel.nameComparator, this)
-        recyclerView.adapter = adapter
-    }
-
-    private fun buildContainerTransformation() =
-        MaterialContainerTransform().apply {
-            scrimColor = Color.TRANSPARENT
-            duration = 300
-            interpolator = FastOutSlowInInterpolator()
-            fadeMode = MaterialContainerTransform.FADE_MODE_IN
-        }
-
-
-    private fun setClickListeners() {
-//        binding.filterCardd.setOnClickListener{
-//            Log.d("filter", "Filtering!")
-//        }
-        binding.fabHome.setOnClickListener {
-            val transition = buildContainerTransformation()
-            transition.startView = binding.fabHome
-            transition.endView = binding.filterLayout
-
-            transition.addTarget(binding.filterLayout)
-
-            TransitionManager.beginDelayedTransition(binding.root, transition)
-            binding.filterLayout.visibility = View.VISIBLE
-            binding.fabHome.visibility = View.INVISIBLE
-        }
-        binding.closeFilters.setOnClickListener{
-            val transition = buildContainerTransformation()
-            transition.startView = binding.filterLayout
-            transition.endView = binding.fabHome
-
-            transition.addTarget(binding.fabHome)
-
-            TransitionManager.beginDelayedTransition(binding.root, transition)
-            binding.filterLayout.visibility = View.GONE
-            binding.fabHome.visibility = View.VISIBLE
-        }
-        binding.applyFilters.setOnClickListener{
-            //Apply filters
-            //TODO: APPLY FILTERS
-
-            //Transition
-            val transition = buildContainerTransformation()
-            transition.startView = binding.filterLayout
-            transition.endView = binding.fabHome
-            transition.addTarget(binding.fabHome)
-
-            TransitionManager.beginDelayedTransition(binding.root, transition)
-            binding.filterLayout.visibility = View.GONE
-            binding.fabHome.visibility = View.VISIBLE
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -269,6 +357,11 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
         findNavController().navigate(
             RestaurantListFragmentDirections.actionRestaurantListFragmentToDetailFragment(restaurant)
         )
+    }
+
+    override fun onDestroyView() {
+        recyclerViewState = recyclerView.layoutManager?.onSaveInstanceState()!!
+        super.onDestroyView()
     }
 
 }

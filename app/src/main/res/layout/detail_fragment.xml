@@ -17,9 +17,9 @@
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/linearLayout"
-        >
+                android:gravity="bottom" android:layout_gravity="bottom">
             <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" app:cardCornerRadius="25dp" app:cardElevation="15dp"

@@ -20,4 +20,6 @@
     <string name="filter_address">Address</string>
     <string name="filter_state">State</string>
     <string name="filter_country">Country</string>
+    <string name="filter_city">City</string>
+    <string name="filter_zip_code">Postal Code</string>
 </resources>

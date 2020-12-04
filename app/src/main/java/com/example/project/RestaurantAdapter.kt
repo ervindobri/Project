@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.SortedList
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.example.project.models.RestaurantData
+import com.example.project.vmodels.RestaurantListViewModel
 import jp.wasabeef.glide.transformations.BlurTransformation
 
 
@@ -127,11 +128,13 @@ class RestaurantAdapter(
         notifyDataSetChanged()
     }
 
+
     fun addMoreItems(list: ArrayList<RestaurantData>){
-        mSortedList.beginBatchedUpdates()
+//        mSortedList.beginBatchedUpdates()
         mSortedList.addAll(list)
-        mSortedList.endBatchedUpdates()
-        notifyDataSetChanged()
+        Log.d("size", mSortedList.size().toString())
+//        mSortedList.endBatchedUpdates()
+//        notifyDataSetChanged()
     }
 
     fun getItems(): SortedList<RestaurantData> {
