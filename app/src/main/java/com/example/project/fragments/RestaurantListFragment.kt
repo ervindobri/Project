@@ -162,17 +162,30 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
                         override fun onResponse(call: Call<ResponseData>, response: Response<ResponseData>) {
                             Log.d("logresponse", response.body().toString())
                             if (response.isSuccessful) {
-                                viewModel.lastResponse = response.body()!!
-                                progressBarLayout.setVerticalGravity(Gravity.BOTTOM)
-                                progressBar.visibility = View.GONE
-                                adapter = RestaurantAdapter(
-                                    binding!!.root.context,
-                                    viewModel.nameComparator,
-                                    this
-                                )
-                                viewModel.oldList = response.body()!!.restaurants
-                                adapter!!.addMoreItems(response.body()!!.restaurants)
-                                recyclerView!!.adapter = adapter
+                                if ( response.body()!!.restaurants.size > 0){
+                                    viewModel.lastResponse = response.body()!!
+                                    progressBarLayout.setVerticalGravity(Gravity.BOTTOM)
+                                    progressBar.visibility = View.GONE
+                                    binding?.emptyLayout?.visibility = View.GONE
+
+                                    adapter = RestaurantAdapter(
+                                        binding!!.root.context,
+                                        viewModel.nameComparator,
+                                        this
+                                    )
+                                    viewModel.oldList = response.body()!!.restaurants
+                                    adapter!!.addMoreItems(response.body()!!.restaurants)
+                                    recyclerView!!.adapter = adapter
+                                }
+                                else{
+                                    binding?.emptyLayout?.visibility = View.VISIBLE
+                                    viewModel.lastResponse = response.body()!!
+                                    progressBar.visibility = View.GONE
+                                    viewModel.oldList = response.body()!!.restaurants
+                                    adapter!!.addMoreItems(response.body()!!.restaurants)
+                                    recyclerView?.adapter = adapter
+                                }
+
                             }
                         }
 
@@ -299,7 +312,16 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
+    //TODO: refactor request to one function
     private fun getFilteredItems() {
+        when (viewModel.filtering){
+           true -> {
+
+           }
+           false -> {
+
+           }
+        }
         viewModel.request.filterRestaurants(
             viewModel.countryMap.filterValues { it == viewModel.filters[0] }.keys.first(), //country
             viewModel.filters[1].toInt(),  //price
@@ -312,18 +334,32 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
             override fun onResponse(call: Call<ResponseData>, response: Response<ResponseData>) {
                 Log.d("logresponse", response.body().toString())
                 if (response.isSuccessful) {
-                    viewModel.lastResponse = response.body()!!
 
-                    progressBarLayout.setVerticalGravity(Gravity.BOTTOM)
-                    progressBar.visibility = View.GONE
-                    adapter = RestaurantAdapter(
-                         binding!!.root.context,
-                        viewModel.nameComparator,
-                        this
-                    )
-                    viewModel.oldList = response.body()!!.restaurants
-                    adapter!!.addMoreItems(response.body()!!.restaurants)
-                    recyclerView?.adapter = adapter
+                    if ( response.body()!!.restaurants.size >0){
+                        viewModel.lastResponse = response.body()!!
+                        recyclerView?.visibility = View.VISIBLE
+
+                        progressBarLayout.setVerticalGravity(Gravity.BOTTOM)
+                        progressBar.visibility = View.GONE
+                        binding?.emptyLayout?.visibility = View.GONE
+
+                        adapter = RestaurantAdapter(
+                            binding!!.root.context,
+                            viewModel.nameComparator,
+                            this
+                        )
+                        viewModel.oldList = response.body()!!.restaurants
+                        adapter!!.addMoreItems(response.body()!!.restaurants)
+                        recyclerView?.adapter = adapter
+                        viewModel.currentPage++
+
+                    }
+                    else{
+                        binding?.emptyLayout?.visibility = View.VISIBLE
+                        progressBar.visibility = View.GONE
+                        recyclerView?.visibility = View.GONE
+                    }
+
                 }
             }
 
@@ -337,7 +373,6 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
                 )
             }
         })
-        viewModel.currentPage++
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
