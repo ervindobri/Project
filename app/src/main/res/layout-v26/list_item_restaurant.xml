@@ -3,14 +3,13 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="fill_parent"
-              android:layout_marginTop="15dp"
               android:layout_marginBottom="15dp"
               android:layout_marginLeft="5dp"
               android:layout_marginRight="5dp" android:layout_height="wrap_content">
 
     <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:layout_marginTop="50dp">
+            android:layout_height="wrap_content">
 
         <LinearLayout
                 android:orientation="vertical"
@@ -95,14 +94,14 @@
                     app:cardCornerRadius="90dp" app:cardElevation="5dp"
                     android:foregroundGravity="center_vertical|center_horizontal" android:textAlignment="center"
             >
-                <CheckBox
-                        android:id="@+id/icon"
-                        android:layout_width="wrap_content"
+                <ToggleButton
+                        android:id="@+id/favoriteToggle"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:button="@drawable/sl_favourite_24dp"
-                        app:buttonTint="@android:color/white"
-                        android:textAlignment="gravity" android:gravity="center_horizontal|center_vertical"
-                        android:layout_gravity="center_horizontal|center_vertical"/>
+                        android:background="@drawable/sl_favourite_24dp"
+                        android:text=""
+                        android:textOff=""
+                        android:textOn="" android:layout_margin="5dp"/>
             </androidx.cardview.widget.CardView>
         </RelativeLayout>
     </RelativeLayout>

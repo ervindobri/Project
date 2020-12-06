@@ -39,6 +39,7 @@ class DetailFragment : Fragment() {
         binding.addressView.text = args.restaurant.address
         binding.cityView.text = args.restaurant.city + ", " + args.restaurant.country
         binding.priceRangeView.text = args.restaurant.priceRange()
+        binding.buttonFavorite.isChecked = args.restaurant.favorite
         Glide.with(binding.root.context)
             .load("https://www.elitetraveler.com/wp-content/uploads/2007/02/Caelis_Barcelona_alta2A0200-1-730x450.jpg")
 //            .apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3))) // for blur
@@ -61,7 +62,6 @@ class DetailFragment : Fragment() {
             else{
                 Log.d("false:", binding.buttonFavorite.isChecked.toString())
                 //TOOD: remove from favorites
-
             }
 
         }

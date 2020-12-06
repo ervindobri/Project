@@ -1,20 +1,25 @@
 package com.example.project.vmodels
 
-import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.SortedList
-import com.example.project.models.ApiEndpoints
-import com.example.project.models.ResponseData
-import com.example.project.models.RestaurantData
-import com.example.project.models.RetrofitClient
-import java.util.*
-import kotlin.Comparator
+import android.app.Application
+import android.util.Log
+import android.view.View
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.example.project.api.RetrofitClient
+import com.example.project.models.*
+import com.example.project.database.RestaurantDatabase
+import kotlinx.coroutines.launch
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class RestaurantListViewModel : ViewModel() {
-    val standardCountry: String = "MX"
+class RestaurantListViewModel(application: Application) : AndroidViewModel(application) {
+    var progressVisibility: Int = View.GONE
+    val standardCountryCode: String = "MX"
+    val standardCountry: String = "Mexico"
 
-    val request = RetrofitClient.buildService(ApiEndpoints::class.java)
+    val request = RetrofitClient.api
 
     var searchString: String = ""
 
@@ -26,31 +31,21 @@ class RestaurantListViewModel : ViewModel() {
     var isLoading: Boolean = false
 
     var filtering : Boolean = false
-    var filters: List<String> = listOf()
 
-    val nameComparator: Comparator<RestaurantData> =
-        Comparator<RestaurantData> { a, b ->
-            a.getName().compareTo(b.getName())
-        }
+    var filters: HashMap<String,Any?> = hashMapOf(
+        "country" to standardCountryCode,
+        "name" to "",
+        "price" to 1,
+        "address" to "",
+        "city" to "",
+        "zip" to "",
+        "page" to currentPage
+    )
+
 
     var oldList : ArrayList<RestaurantData> = ArrayList()
 
-    lateinit var lastResponse : ResponseData
-    fun filter(models: ArrayList<RestaurantData>, query: String): ArrayList<RestaurantData> {
-        val lowerCaseQuery = query.toLowerCase(Locale.ROOT)
-        val filteredModelList: ArrayList<RestaurantData> = ArrayList()
-        for (model in models) {
-            val text: String = model.getName().toLowerCase(Locale.ROOT)
-            if (text.contains(lowerCaseQuery)) {
-                filteredModelList.add(model)
-            }
-        }
-        return filteredModelList
-    }
-
-
-    var countryMap : MutableMap<String,String> = hashMapOf(
-
+         var countryMap : MutableMap<String,String> = hashMapOf(
             "AE" to "United Arab Emirates",
             "AW" to "Aruba",
             "CA" to "Canada",
@@ -59,20 +54,91 @@ class RestaurantListViewModel : ViewModel() {
             "CR" to  "Costa Rica",
             "HK" to  "Hong Kong" ,
             "KN" to  "Saint Kitts and Nevis"  ,
-             "KY" to  "Cayman Islands" ,
-             "MC" to  "Monaco" ,
-             "MO" to  "Macao" ,
-             "MX" to  "Mexico" ,
-             "MY" to  "Malaysia" ,
-             "PT" to  "Portugal" ,
-             "SA" to  "Saudi Arabia" ,
-             "SG" to  "Singapore" ,
-             "SV" to  "El Salvador" ,
-             "US" to  "United States" ,
-             "VI" to  "Virgin Islands,US"
-    )
+            "KY" to  "Cayman Islands" ,
+            "MC" to  "Monaco" ,
+            "MO" to  "Macao" ,
+            "MX" to  "Mexico" ,
+            "MY" to  "Malaysia" ,
+            "PT" to  "Portugal" ,
+            "SA" to  "Saudi Arabia" ,
+            "SG" to  "Singapore" ,
+            "SV" to  "El Salvador" ,
+            "US" to  "United States" ,
+            "VI" to  "Virgin Islands,US"
+        )
+
+
+
+    private val repository: RestaurantRepository
+    var favoritesLive : LiveData<List<RestaurantData>>? = null
+    var favorites : List<RestaurantData> = listOf()
+    var restaurants : MutableLiveData<ArrayList<RestaurantData>> = MutableLiveData()
+    lateinit var lastResponse : ResponseData
+
     init {
         currentPage = 0
         filtering = false
+        val dao = RestaurantDatabase.getDatabase(application).restaurantDao()
+        repository = RestaurantRepository(dao)
+//        favorites = repository.favorites
+        favoritesLive = repository.favoritesLive
+
+//        setFilters(standardCountry,null,null,null,null,null,currentPage)
+        getRestaurants()
+    }
+
+    @JvmName("setFilters1")
+    fun setFilters(
+        country: String,
+        name: String,
+        price: Int?,
+        address: String,
+        city: String,
+        zip: String,
+        page: Int
+    ) {
+        Log.d("map", countryMap.size.toString())
+
+        filters["country"] = countryMap.filterValues { it == country }.keys.first()
+        filters["name"] = name
+        filters["price"] = price
+        filters["address"] = address
+        filters["city"] = city
+        filters["zip"] = if (zip == "null") "" else zip
+        filters["page"] = page
+
+    }
+
+    fun getRestaurants(){
+        viewModelScope.launch {
+            progressVisibility = View.VISIBLE
+            val response = repository.getAll(
+                country = filters["country"] as String,
+                name = filters["name"] as String,
+                price = filters["price"] as Int?,
+                address = filters["address"] as String,
+                city = filters["city"] as String,
+                zipCode = filters["zip"] as String,
+                page = currentPage as Int?,
+            )
+            synchronized(restaurants){
+                restaurants.value = arrayListOf()
+                val temp: ArrayList<RestaurantData> = restaurants.value ?: ArrayList()
+                temp.addAll(response.restaurants)
+                restaurants.value = temp
+                lastResponse = response
+                progressVisibility = View.GONE
+                Log.d("list", restaurants.value!!.size.toString())
+
+
+            }
+        }
+    }
+
+
+    fun addToFavorites(restaurant: RestaurantData){
+        viewModelScope.launch {
+            repository.insert(restaurant)
+        }
     }
 }
