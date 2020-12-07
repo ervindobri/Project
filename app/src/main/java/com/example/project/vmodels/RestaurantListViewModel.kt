@@ -122,14 +122,14 @@ class RestaurantListViewModel(application: Application) : AndroidViewModel(appli
                 page = currentPage as Int?,
             )
             synchronized(restaurants){
-                restaurants.value = arrayListOf()
+                //get old list if no empty and add to temp list
                 val temp: ArrayList<RestaurantData> = restaurants.value ?: ArrayList()
                 temp.addAll(response.restaurants)
+
+                //new list contains all values
                 restaurants.value = temp
                 lastResponse = response
-                progressVisibility = View.GONE
-                Log.d("list", restaurants.value!!.size.toString())
-
+                isLoading = false
 
             }
         }

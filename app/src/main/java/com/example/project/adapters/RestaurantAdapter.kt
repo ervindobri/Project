@@ -71,11 +71,11 @@ class RestaurantAdapter(
     }
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         // 1
-        val restaurant = getItem(position) as RestaurantData
+        val restaurant = getItem(position)
 
         holder.nameTextView.text = restaurant.name
         holder.addressTextView.text = restaurant.address
-        holder.priceRangeTextView.text = position.toString()
+        holder.priceRangeTextView.text = restaurant.priceRange()
 
         holder.favoriteToggle.isChecked = getItem(holder.adapterPosition).favorite
 
@@ -123,7 +123,6 @@ class RestaurantAdapter(
     fun setItems(list: ArrayList<RestaurantData>) {
         mSortedList = list
         notifyDataSetChanged()
-
     }
 
 

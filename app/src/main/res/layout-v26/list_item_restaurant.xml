@@ -47,18 +47,18 @@
                             android:layout_marginBottom="15dp">
                         <TextView
                                 android:text="@string/restaurant_name"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content" android:id="@+id/restaurant_name"
                                 android:textColor="@color/colorAccent" android:fontFamily="@font/raleway_bold"
                                 android:autoSizeTextType="uniform"
                                 android:autoSizeMinTextSize="16sp"
                                 android:autoSizeMaxTextSize="18sp"
-                                android:autoSizeStepGranularity="2sp"
-                                android:includeFontPadding="true" android:typeface="sans"
+                                android:autoSizeStepGranularity="1sp"
+                                android:includeFontPadding="true" android:typeface="normal"
                                 android:layout_marginTop="25dp" android:shadowColor="#000000"
-                                android:layout_margin="5dp" android:maxHeight="50dp" android:textSize="12sp"
+                                android:layout_margin="5dp" android:textSize="12sp"
                                 android:autoText="false" android:capitalize="words" android:textAlignment="viewStart"
-                        />
+                                android:maxLines="3" android:lines="2" android:minLines="1"/>
                         <TextView
                                 android:text="@string/restaurant_address"
                                 android:layout_width="wrap_content"

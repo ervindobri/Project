@@ -45,12 +45,12 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="15dp"
                 android:layout_marginStart="15dp" android:layout_marginEnd="15dp" android:layout_marginBottom="15dp"
-                tools:visibility="gone">
+                tools:visibility="visible">
             <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" android:gravity="center" android:layout_gravity="center"
-                    android:visibility="visible" android:id="@+id/filterLayout">
+                    android:visibility="gone" android:id="@+id/filterLayout">
                 <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" app:cardCornerRadius="25dp" android:visibility="visible"
@@ -305,6 +305,18 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" android:gravity="bottom|end">
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:id="@+id/fabGoTop" android:layout_marginBottom="55dp"
+                        app:layout_constraintBottom_toBottomOf="parent" android:layout_marginEnd="15dp"
+                        app:layout_constraintEnd_toEndOf="parent" android:focusable="true"
+                        app:rippleColor="@color/colorPrimary"
+                        android:src="@drawable/ic_outline_keyboard_arrow_up_24"
+                        app:fabSize="mini" app:maxImageSize="45dp" app:tint="@color/white"
+                        android:elevation="5dp" app:backgroundTint="@color/white"
+                        android:backgroundTint="@color/colorPrimary"/>
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

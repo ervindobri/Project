@@ -48,9 +48,21 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = "Restaurants"
 
-        val your_layoutManager = recyclerView?.layoutManager;
-        recyclerView?.addOnScrollListener(object : PaginationScrollListener(your_layoutManager as LinearLayoutManager) {
+        setScrollListeners()
+        setClickListeners()
+    }
 
+    private fun setScrollListeners() {
+        recyclerView?.addOnScrollListener(object : PaginationScrollListener(recyclerView?.layoutManager as LinearLayoutManager) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if ( recyclerView.computeVerticalScrollOffset() > 0){
+                    binding?.fabGoTop?.visibility = View.VISIBLE
+                }
+                else{
+                    binding?.fabGoTop?.visibility = View.GONE
+                }
+            }
             override fun isLastPage(): Boolean {
                 return viewModel.isLastPage
             }
@@ -66,19 +78,16 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
                     viewModel.isLoading = true
                     Log.d("bla", "LOADING MORE ITEMS")
                     getMoreItems()
-                    viewModel.restaurants.observe(viewLifecycleOwner, { adapter!!.setItems(it)})
-                    viewModel.isLoading = false
                 }
 
             }
         })
-        setClickListeners()
     }
 
     private fun getMoreItems() {
         viewModel.currentPage++
         viewModel.getRestaurants()
-        recyclerView?.scrollToPosition(0) //loading too many items quickfix
+//        recyclerView?.scrollToPosition(0) //loading too many items quickfix
     }
 
 
@@ -162,7 +171,10 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
 //   TODO:display current filters on top of list
 
     private fun setClickListeners() {
-         binding!!.fabHome.setOnClickListener {
+        binding?.fabGoTop?.setOnClickListener{
+            recyclerView?.smoothScrollToPosition(0)
+        }
+         binding?.fabHome?.setOnClickListener {
             //Load back current filters if there are
             if ( viewModel.filters.isNotEmpty()){
                  binding!!.priceGroup.check(viewModel.filters["price"].toString().toInt())
@@ -185,7 +197,7 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
              binding!!.filterLayout.visibility = View.VISIBLE
              binding!!.fabHome.visibility = View.INVISIBLE
         }
-         binding!!.closeFilters.setOnClickListener{
+         binding?.closeFilters?.setOnClickListener{
             val transition = buildContainerTransformation()
             transition.startView =  binding!!.filterLayout
             transition.endView =  binding!!.fabHome
@@ -196,7 +208,7 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
              binding!!.filterLayout.visibility = View.GONE
              binding!!.fabHome.visibility = View.VISIBLE
         }
-         binding!!.applyFilters.setOnClickListener{
+         binding?.applyFilters?.setOnClickListener{
             //Apply filters
             Log.d(
                 "filters", ( binding!!.priceGroup.checkedChipId.toString() + ", "
@@ -218,7 +230,7 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
             viewModel.filtering = true
             viewModel.currentPage = 0
             getMoreItems();
-            viewModel.restaurants.observe(viewLifecycleOwner, { adapter!!.setItems(it)})
+//            viewModel.restaurants.observe(viewLifecycleOwner, { adapter!!.setItems(it)})
 
 
              binding!!.root.hideKeyboard()
