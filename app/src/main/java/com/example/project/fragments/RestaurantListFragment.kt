@@ -12,8 +12,10 @@ import android.view.Gravity.CENTER_VERTICAL
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -50,6 +52,13 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
 
         setScrollListeners()
         setClickListeners()
+        setLayoutListeners()
+    }
+
+    private fun setLayoutListeners() {
+        viewModel.emptyList.observe(viewLifecycleOwner, {
+            binding?.emptyLayout?.visibility = if (it) View.VISIBLE else View.GONE;
+        })
     }
 
     private fun setScrollListeners() {
@@ -227,13 +236,16 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
                 binding!!.zipCodeTextField.editText?.text.toString(), //zip code
                 1
             )
+
             viewModel.filtering = true
             viewModel.currentPage = 0
+            viewModel.progressVisibility = View.VISIBLE
+            adapter!!.clearItems();
+
             getMoreItems();
-//            viewModel.restaurants.observe(viewLifecycleOwner, { adapter!!.setItems(it)})
 
-
-             binding!!.root.hideKeyboard()
+            viewModel.progressVisibility = View.GONE
+            binding!!.root.hideKeyboard()
             //Transition
             val transition = buildContainerTransformation()
             transition.startView =  binding!!.filterLayout
@@ -272,12 +284,14 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
+        adapter!!.clearItems();
         viewModel.setFilters(
             viewModel.standardCountry,
             query ?: "",null,"","","",
             1)
         viewModel.getRestaurants()
-        recyclerView?.scrollToPosition(0)
+
+        if ( recyclerView?.verticalScrollbarPosition!! > 0 ) recyclerView?.smoothScrollToPosition(0)
         return true
     }
 

@@ -29,7 +29,7 @@ class RestaurantRepository(private val dao: RestaurantDao) {
             return response
         }
         catch (e: Exception){
-            Log.i("ex", e.message.toString())
+            Log.i("retrofit-ex", e.message.toString())
             return ResponseData(0,0,0, arrayListOf())
         }
     }

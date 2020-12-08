@@ -68,6 +68,7 @@ class RestaurantListViewModel(application: Application) : AndroidViewModel(appli
         )
 
 
+    val emptyList : MutableLiveData<Boolean> =  MutableLiveData<Boolean>()
 
     private val repository: RestaurantRepository
     var favoritesLive : LiveData<List<RestaurantData>>? = null
@@ -130,6 +131,7 @@ class RestaurantListViewModel(application: Application) : AndroidViewModel(appli
                 restaurants.value = temp
                 lastResponse = response
                 isLoading = false
+                emptyList.value = temp.size == 0
 
             }
         }

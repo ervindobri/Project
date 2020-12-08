@@ -125,5 +125,10 @@ class RestaurantAdapter(
         notifyDataSetChanged()
     }
 
+    fun clearItems() {
+        mSortedList.clear()
+        notifyDataSetChanged()
+    }
+
 
 }
