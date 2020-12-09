@@ -70,13 +70,15 @@ class ProfileFragment : Fragment() {
             AppDatabase::class.java, "users"
         ).build()
         val thread = Thread{
-            viewModel.currentUser = db.userDao().getAll().first()
-            db.close()
-            val user = viewModel.currentUser!!
-            binding!!.contactName.text = user.firstName + " " + user.lastName
-            binding!!.contactAddress.text = user.address
-            binding!!.contactMail.text = user.emailAddress
-            binding!!.contactPhone.text = user.phone
+            if ( db.userDao().getAll().size > 0){
+                viewModel.currentUser = db.userDao().getAll().first()
+                db.close()
+                val user = viewModel.currentUser!!
+                binding!!.contactName.text = user.firstName + " " + user.lastName
+                binding!!.contactAddress.text = user.address
+                binding!!.contactMail.text = user.emailAddress
+                binding!!.contactPhone.text = user.phone
+            }
         }
         thread.start()
         db.close()

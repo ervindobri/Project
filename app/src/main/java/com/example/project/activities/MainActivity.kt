@@ -63,18 +63,21 @@ class MainActivity : AppCompatActivity() {
         ).build()
         //Insert Case
         val thread = Thread {
-            val user = User(
-                1,
-                "Ervin",
-                "Dobri",
-                "dobriervin@yahoo.com",
-                "Strada Armoniei, nr.14",
-                null,
-                "+40754365846"
-            )
-            db.userDao().insertAll(user)
+            if ( db.userDao().getAll().size == 0){
+                val user = User(
+                    1,
+                    "Ervin",
+                    "Dobri",
+                    "dobriervin@yahoo.com",
+                    "Strada Armoniei, nr.14",
+                    null,
+                    "+40754365846"
+                )
+                db.userDao().insertAll(user)
+            }
+
         }
-//        thread.start()
+        thread.start()
     }
 
 

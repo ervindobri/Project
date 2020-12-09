@@ -1,54 +1,29 @@
 package com.example.project.fragments
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
-import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.project.databinding.DetailFragmentBinding
+import com.glide.slider.library.SliderLayout
+import com.glide.slider.library.animations.DescriptionAnimation
+import com.glide.slider.library.slidertypes.TextSliderView
 import com.google.android.material.transition.platform.MaterialFade
 import com.google.android.material.transition.platform.MaterialFadeThrough
-import java.util.*
-import com.glide.slider.library.animations.DescriptionAnimation
-
-import com.glide.slider.library.SliderLayout
-
-import com.glide.slider.library.slidertypes.TextSliderView
-
-import com.bumptech.glide.request.RequestOptions
-
-import android.R
-import android.app.Activity
-import android.app.SearchManager.QUERY
-import android.content.Context
-import android.provider.MediaStore
-import android.widget.Toast
-import com.glide.slider.library.slidertypes.BaseSliderView
-import com.glide.slider.library.tricks.ViewPagerEx
 import java.io.File
-import android.os.Build
-import android.provider.DocumentsContract
-
-import android.content.ContentUris
-import android.database.Cursor
-
-import android.os.Environment
-import com.example.project.helpers.RealPathUtil
-import java.lang.Exception
-import android.graphics.Bitmap
-import android.provider.MediaStore.Downloads.INTERNAL_CONTENT_URI
-import android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-import androidx.annotation.RequiresApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import java.util.*
 
 
 class DetailFragment : Fragment(){
@@ -114,7 +89,7 @@ class DetailFragment : Fragment(){
 
         // set Slider Transition Animation
         // imageSlider.setPresetTransformer(SliderLayout.Transformer.Default);
-        imageSlider.setPresetTransformer(SliderLayout.Transformer.Accordion)
+        imageSlider.setPresetTransformer(SliderLayout.Transformer.Stack)
 
         imageSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom)
         imageSlider.setCustomAnimation(DescriptionAnimation())
@@ -123,6 +98,7 @@ class DetailFragment : Fragment(){
         imageSlider.stopCyclingWhenTouch(false)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = args.restaurant.name
@@ -138,32 +114,28 @@ class DetailFragment : Fragment(){
             val image: String? = data.getStringExtra("IMAGE_KEY")
             Log.e("clipdata", image.toString());
             if (data.data != null) {
-                val imagePath: String? = data.data?.path
-                if (imagePath != null) {
+                    val file: File = FileUtil.from(requireActivity(), data.data!!)
                     val requestOptions = RequestOptions()
                     requestOptions.centerCrop()
                     val sliderView = TextSliderView(binding.root.context)
-                    val photoUri = Uri.fromFile(File(imagePath))
 
                     sliderView
-                        .image(File(photoUri.path))
-                        .description("New image from gallery")
+                        .image(file)
+                        .description(file.nameWithoutExtension)
                         .setRequestOption(requestOptions)
                         .setProgressBarVisible(true)
 
                     imageSlider.addSlider(sliderView)
-                    Log.e("imagePath", imagePath)
-                };
             }
-//            displayImageData()
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     private fun setListeners() {
         binding.addImageCard.setOnClickListener{
-            val intent = Intent(Intent.ACTION_PICK,INTERNAL_CONTENT_URI)
-            startActivityForResult(intent,1)
+            val intent = Intent()
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
         }
         binding.favoriteCard.setOnClickListener{
             binding.buttonFavorite.isChecked = !binding.buttonFavorite.isChecked
@@ -197,7 +169,5 @@ class DetailFragment : Fragment(){
         binding.slider.stopAutoCycle()
         super.onStop()
     }
-//    override fun onSliderClick(slider: BaseSliderView?) {
-//        Toast.makeText(binding.root.context, "clicked", Toast.LENGTH_SHORT).show();
-//    }
+
 }
