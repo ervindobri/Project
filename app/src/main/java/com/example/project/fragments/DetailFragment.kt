@@ -27,6 +27,7 @@ import com.bumptech.glide.request.RequestOptions
 
 import android.R
 import android.app.Activity
+import android.app.SearchManager.QUERY
 import android.content.Context
 import android.provider.MediaStore
 import android.widget.Toast
@@ -42,6 +43,12 @@ import android.database.Cursor
 import android.os.Environment
 import com.example.project.helpers.RealPathUtil
 import java.lang.Exception
+import android.graphics.Bitmap
+import android.provider.MediaStore.Downloads.INTERNAL_CONTENT_URI
+import android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+import androidx.annotation.RequiresApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 class DetailFragment : Fragment(){
@@ -49,6 +56,12 @@ class DetailFragment : Fragment(){
     private lateinit var imageSlider: SliderLayout
     private lateinit var binding: DetailFragmentBinding
     private val args: DetailFragmentArgs by navArgs()
+    private val PROJECTION = arrayOf(MediaStore.Video.Media._ID)
+    private val QUERY = MediaStore.Video.Media.DISPLAY_NAME + " = ?"
+    private val collection =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) MediaStore.Video.Media.getContentUri(
+            MediaStore.VOLUME_EXTERNAL
+        ) else MediaStore.Video.Media.EXTERNAL_CONTENT_URI
 
 
     @SuppressLint("SetTextI18n", "CheckResult")
@@ -122,6 +135,8 @@ class DetailFragment : Fragment(){
         super.onActivityResult(requestCode, resultCode, data)
         // When an Image is picked
         if (requestCode == 1 && resultCode == Activity.RESULT_OK && null != data) {
+            val image: String? = data.getStringExtra("IMAGE_KEY")
+            Log.e("clipdata", image.toString());
             if (data.data != null) {
                 val imagePath: String? = data.data?.path
                 if (imagePath != null) {
@@ -129,9 +144,9 @@ class DetailFragment : Fragment(){
                     requestOptions.centerCrop()
                     val sliderView = TextSliderView(binding.root.context)
                     val photoUri = Uri.fromFile(File(imagePath))
-                    val path = RealPathUtil.getImagePath(binding.root.context, photoUri)
+
                     sliderView
-                        .image(path)
+                        .image(File(photoUri.path))
                         .description("New image from gallery")
                         .setRequestOption(requestOptions)
                         .setProgressBarVisible(true)
@@ -144,10 +159,10 @@ class DetailFragment : Fragment(){
         }
     }
 
-
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun setListeners() {
         binding.addImageCard.setOnClickListener{
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            val intent = Intent(Intent.ACTION_PICK,INTERNAL_CONTENT_URI)
             startActivityForResult(intent,1)
         }
         binding.favoriteCard.setOnClickListener{
