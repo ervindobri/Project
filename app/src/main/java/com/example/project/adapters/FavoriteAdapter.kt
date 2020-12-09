@@ -1,5 +1,6 @@
 package com.example.project.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,10 +15,17 @@ import com.example.project.models.RestaurantData
 import com.github.islamkhsh.CardSliderAdapter
 import jp.wasabeef.glide.transformations.BlurTransformation
 
-class FavoriteAdapter() : CardSliderAdapter<FavoriteAdapter.FavoriteViewHolder>() {
+class FavoriteAdapter(
+    private var selectedRestaurant: SelectedRestaurant
+) : CardSliderAdapter<FavoriteAdapter.FavoriteViewHolder>() {
 
     private var restaurants : List<RestaurantData> = listOf()
     override fun getItemCount() = restaurants.size
+
+
+    interface SelectedRestaurant {
+        fun showDetails(restaurant: RestaurantData)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_favorite, parent, false)
@@ -31,7 +39,6 @@ class FavoriteAdapter() : CardSliderAdapter<FavoriteAdapter.FavoriteViewHolder>(
     }
 
     override fun bindVH(holder: FavoriteViewHolder, position: Int) {
-        //TODO bind item object with item layout view
         val restaurant = restaurants[position]
         holder.nameTextView.text = restaurant.name
         holder.addressTextView.text = restaurant.address
@@ -40,6 +47,11 @@ class FavoriteAdapter() : CardSliderAdapter<FavoriteAdapter.FavoriteViewHolder>(
             .load("https://www.elitetraveler.com/wp-content/uploads/2007/02/Caelis_Barcelona_alta2A0200-1-730x450.jpg")
             .apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3)))
             .into(holder.thumbnailImageView)
+
+        holder.card.setOnClickListener { v ->
+            Log.d("holder", "Clicked!")
+            selectedRestaurant.showDetails(restaurant)
+        }
     }
 
     class FavoriteViewHolder(view: View) : RecyclerView.ViewHolder(view){

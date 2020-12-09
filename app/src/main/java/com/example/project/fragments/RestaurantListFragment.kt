@@ -82,7 +82,6 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
             }
 
             override fun loadMoreItems() {
-                //TODO: fix pagination
                 if (viewModel.lastResponse.total_entries > adapter?.itemCount ?: 0) {
                     viewModel.isLoading = true
                     Log.d("bla", "LOADING MORE ITEMS")
@@ -262,6 +261,8 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
+
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.search_menu, menu);
         val searchItem = menu.findItem(R.id.action_search)

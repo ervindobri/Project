@@ -3,6 +3,7 @@ package com.example.project.database
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.project.models.RestaurantData
+import com.example.project.models.RestaurantUpdate
 
 
 @Dao
@@ -28,6 +29,7 @@ interface RestaurantDao {
 //    @Query("SELECT * FROM restaurants WHERE favorite = 1 ORDER BY NAME ASC")
 //    fun getFavorites() : List<RestaurantData>
 
-//    @Update(entity = RestaurantData::class)
-//    fun updateRestaurant(obj: UserUpdate)
+//    @Query("UPDATE restaurants SET images=:images WHERE id = :rid")
+    @Update(entity = RestaurantData::class)
+    suspend fun updateRestaurant(obj: RestaurantUpdate)
 }

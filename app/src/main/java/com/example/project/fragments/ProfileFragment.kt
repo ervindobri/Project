@@ -9,14 +9,16 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.room.Room
 import com.example.project.adapters.FavoriteAdapter
 import com.example.project.vmodels.ProfileViewModel
 import com.example.project.databinding.ProfileFragmentBinding
 import com.example.project.database.AppDatabase
+import com.example.project.models.RestaurantData
 import com.google.android.material.transition.platform.MaterialSharedAxis
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : Fragment(), FavoriteAdapter.SelectedRestaurant {
 
     private var binding: ProfileFragmentBinding? = null
     private lateinit var viewModel: ProfileViewModel
@@ -49,7 +51,7 @@ class ProfileFragment : Fragment() {
 //            RestaurantData(3,"blabla", "blabasdadas", "balasd", "bla", "bdsadsa", 124, "dsadsa")
 //        )
         val viewPager = binding?.viewPager
-        val adapter = FavoriteAdapter()
+        val adapter = FavoriteAdapter(this)
         viewPager?.adapter = adapter
         viewModel.favoritesLive.observe(this.viewLifecycleOwner, { adapter.setData(it) })
 
@@ -95,7 +97,12 @@ class ProfileFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
-        // TODO: Use the ViewModel
+    }
+
+    override fun showDetails(restaurant: RestaurantData) {
+        findNavController().navigate(
+            ProfileFragmentDirections.actionProfileFragmentToDetailFragment(restaurant)
+        )
     }
 
 }

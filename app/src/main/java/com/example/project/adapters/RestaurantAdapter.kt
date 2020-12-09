@@ -69,9 +69,12 @@ class RestaurantAdapter(
         holder.favoriteToggle.setOnCheckedChangeListener(null)
         super.onViewRecycled(holder)
     }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         // 1
         val restaurant = getItem(position)
+        if ( !restaurant.images.contains(restaurant.image_url)) restaurant.images.add(restaurant.image_url)
+
 
         holder.nameTextView.text = restaurant.name
         holder.addressTextView.text = restaurant.address
@@ -87,7 +90,7 @@ class RestaurantAdapter(
         }
 
         Glide.with(context)
-            .load("https://www.elitetraveler.com/wp-content/uploads/2007/02/Caelis_Barcelona_alta2A0200-1-730x450.jpg")
+            .load(restaurant.image_url)
             .apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3)))
             .into(holder.thumbnailImageView)
 

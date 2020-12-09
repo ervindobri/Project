@@ -14,6 +14,8 @@ import com.example.project.database.AppDatabase
 import com.example.project.database.User
 import com.example.project.fragments.DetailFragment
 import com.example.project.fragments.ProfileFragment
+import com.example.project.fragments.ProfileFragmentDirections
+import com.example.project.models.RestaurantData
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -32,7 +34,6 @@ class MainActivity : AppCompatActivity() {
             navController,
             AppBarConfiguration(setOf(R.id.restaurantListFragment, R.id.profileFragment))
         )
-
         profileFragment = ProfileFragment()
         detailFragment = DetailFragment()
         title = resources.getString(R.string.list)

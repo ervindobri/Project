@@ -14,5 +14,7 @@
         <action android:id="@+id/action_restaurantListFragment_to_detailFragment" app:destination="@id/detailFragment"/>
     </fragment>
     <fragment android:id="@+id/profileFragment" android:name="com.example.project.fragments.ProfileFragment"
-              android:label="profile_fragment" tools:layout="@layout/profile_fragment"/>
+              android:label="profile_fragment" tools:layout="@layout/profile_fragment">
+        <action android:id="@+id/action_profileFragment_to_detailFragment" app:destination="@id/detailFragment"/>
+    </fragment>
 </navigation>

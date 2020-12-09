@@ -14,9 +14,14 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.request.RequestOptions
+import com.example.project.adapters.RestaurantAdapter
 import com.example.project.databinding.DetailFragmentBinding
+import com.example.project.models.RestaurantData
+import com.example.project.models.RestaurantUpdate
+import com.example.project.vmodels.RestaurantListViewModel
 import com.glide.slider.library.SliderLayout
 import com.glide.slider.library.animations.DescriptionAnimation
 import com.glide.slider.library.slidertypes.TextSliderView
@@ -28,6 +33,7 @@ import java.util.*
 
 class DetailFragment : Fragment(){
 
+    private lateinit var viewModel: RestaurantListViewModel
     private lateinit var imageSlider: SliderLayout
     private lateinit var binding: DetailFragmentBinding
     private val args: DetailFragmentArgs by navArgs()
@@ -64,11 +70,10 @@ class DetailFragment : Fragment(){
         val listUrl: ArrayList<String> = ArrayList()
         val listName: ArrayList<String> = ArrayList()
 
-        listUrl.add(args.restaurant.image_url)
-        listName.add("Original image")
-
-        listUrl.add("https://www.elitetraveler.com/wp-content/uploads/2007/02/Caelis_Barcelona_alta2A0200-1-730x450.jpg")
-        listName.add("Caelis Barcelona")
+        args.restaurant.images.forEach{
+            listUrl.add(it);
+            listName.add(it.lastIndex.toString())
+        }
 
         val requestOptions = RequestOptions()
         requestOptions.centerCrop()
@@ -106,18 +111,29 @@ class DetailFragment : Fragment(){
     }
 
 
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(RestaurantListViewModel::class.java)
+    }
+
     @SuppressLint("CheckResult")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         // When an Image is picked
         if (requestCode == 1 && resultCode == Activity.RESULT_OK && null != data) {
             val image: String? = data.getStringExtra("IMAGE_KEY")
-            Log.e("clipdata", image.toString());
             if (data.data != null) {
                     val file: File = FileUtil.from(requireActivity(), data.data!!)
                     val requestOptions = RequestOptions()
                     requestOptions.centerCrop()
                     val sliderView = TextSliderView(binding.root.context)
+                    args.restaurant.images.add(file.absolutePath)
+
+
+                    Log.e("file",args.restaurant.id.toString() + "with " + args.restaurant.images.size)
+
+                    viewModel.updateRestaurant(RestaurantUpdate(args.restaurant.id, args.restaurant.images))
 
                     sliderView
                         .image(file)
@@ -139,14 +155,9 @@ class DetailFragment : Fragment(){
         }
         binding.favoriteCard.setOnClickListener{
             binding.buttonFavorite.isChecked = !binding.buttonFavorite.isChecked
-            if ( binding.buttonFavorite.isChecked ){
-                Log.d("true:", binding.buttonFavorite.isChecked.toString())
-                //TOOD: add to favorites
-            }
-            else{
-                Log.d("false:", binding.buttonFavorite.isChecked.toString())
-                //TOOD: remove from favorites
-            }
+            args.restaurant.favorite = binding.buttonFavorite.isChecked
+            viewModel.addToFavorites(args.restaurant)
+            Log.e("fav", args.restaurant.favorite.toString())
 
         }
         binding.mapCard.setOnClickListener{

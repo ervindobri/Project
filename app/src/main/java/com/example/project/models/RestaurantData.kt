@@ -2,6 +2,8 @@ package com.example.project.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.example.project.helpers.ArrayConverter
 import java.io.Serializable
 
 data class ResponseData(
@@ -16,6 +18,7 @@ data class ResponseData(
 }
 
 @Entity(tableName = "restaurants")
+@TypeConverters(ArrayConverter::class)
 data class RestaurantData(
     @PrimaryKey(autoGenerate = false) val id: Int = 0,
     val name: String = "",
@@ -23,7 +26,10 @@ data class RestaurantData(
     val area: String = "",
     val city: String = "",
     val country: String = "",
-    val image_url: String = "https://www.elitetraveler.com/wp-content/uploads/2007/02/Caelis_Barcelona_alta2A0200-1-730x450.jpg",
+    var image_url: String  ="https://www.elitetraveler.com/wp-content/uploads/2007/02/Caelis_Barcelona_alta2A0200-1-730x450.jpg",
+    var images: ArrayList<String> = arrayListOf(
+        "https://www.elitetraveler.com/wp-content/uploads/2007/02/Caelis_Barcelona_alta2A0200-1-730x450.jpg"
+    ),
     val lat: Double = 0.0,
     val lng: Double = 0.0,
     val mobile_reserve_url: String = "",
@@ -57,4 +63,13 @@ data class RestaurantData(
     fun getName(): String {
         return name
     }
+}
+
+@Entity
+@TypeConverters(ArrayConverter::class)
+data class RestaurantUpdate(
+    @PrimaryKey(autoGenerate = false) val id: Int = 0,
+    val images: ArrayList<String>,
+
+) : Serializable {
 }

@@ -4,9 +4,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.project.api.RetrofitClient
 import com.example.project.database.RestaurantDao
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class RestaurantRepository(private val dao: RestaurantDao) {
     val favoritesLive: LiveData<List<RestaurantData>> = dao.getFavoritesLive()
@@ -21,9 +18,15 @@ class RestaurantRepository(private val dao: RestaurantDao) {
             response.restaurants.forEach {
                 val found  = dao.findByID(it.id)
                 if ( found != null ){
-//                    Log.d("found!", found.id.toString())
+                    Log.d("found!", found.images.size.toString())
                     //its present in the favorites
                     it.favorite = found.favorite
+                    it.images = found.images
+                    // last image means we added it there :)
+                    it.image_url = found.images[found.images.size-1]
+                }
+                else{
+                    it.image_url = it.images[0]
                 }
             }
             return response
@@ -32,6 +35,10 @@ class RestaurantRepository(private val dao: RestaurantDao) {
             Log.i("retrofit-ex", e.message.toString())
             return ResponseData(0,0,0, arrayListOf())
         }
+    }
+
+    suspend fun update(obj : RestaurantUpdate){
+        dao.updateRestaurant(obj)
     }
 
     suspend fun insert(restaurant: RestaurantData) {

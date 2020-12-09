@@ -88,6 +88,13 @@ class RestaurantListViewModel(application: Application) : AndroidViewModel(appli
         getRestaurants()
     }
 
+     fun updateRestaurant(obj : RestaurantUpdate){
+         viewModelScope.launch {
+             repository.update(obj)
+
+         }
+    }
+
     @JvmName("setFilters1")
     fun setFilters(
         country: String,
