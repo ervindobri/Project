@@ -1,22 +1,19 @@
-package com.example.project
+package com.example.project.activities
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import br.com.mauker.materialsearchview.MaterialSearchView
-import com.allattentionhere.fabulousfilter.AAH_FabulousFragment
+import androidx.room.Room
+import com.example.project.R
+import com.example.project.database.AppDatabase
+import com.example.project.database.User
 import com.example.project.fragments.DetailFragment
 import com.example.project.fragments.ProfileFragment
-import com.example.project.fragments.RestaurantListFragment
-import com.example.project.models.RestaurantData
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -54,7 +51,34 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        initPersistency()
     }
+
+    private fun initPersistency() {
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "users"
+        ).build()
+        //Insert Case
+        val thread = Thread {
+            val user = User(
+                1,
+                "Ervin",
+                "Dobri",
+                "dobriervin@yahoo.com",
+                "Strada Armoniei, nr.14",
+                null,
+                "+40754365846"
+            )
+            db.userDao().insertAll(user)
+        }
+//        thread.start()
+    }
+
+
+
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
