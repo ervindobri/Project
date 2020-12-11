@@ -1,6 +1,5 @@
 package com.example.project.fragments
 
-import com.example.project.helpers.PaginationScrollListener
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -10,12 +9,12 @@ import android.util.Log
 import android.view.*
 import android.view.Gravity.CENTER_VERTICAL
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.project.R
 import com.example.project.adapters.RestaurantAdapter
 import com.example.project.databinding.RestaurantListFragmentBinding
-
+import com.example.project.helpers.PaginationScrollListener
 import com.example.project.models.RestaurantData
 import com.example.project.vmodels.RestaurantListViewModel
 import com.example.project.vmodels.RestaurantListViewModelFactory
@@ -39,7 +38,6 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
     private lateinit var recyclerViewState: Parcelable
     private var  binding : RestaurantListFragmentBinding? = null
     private lateinit var searchView: SearchView
-    private lateinit var progressBarLayout: LinearLayout
     private lateinit var progressBar: CircularProgressIndicator
     private lateinit var viewModel: RestaurantListViewModel
 
@@ -96,7 +94,6 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
     private fun getMoreItems() {
         viewModel.currentPage++
         viewModel.getRestaurants()
-//        recyclerView?.scrollToPosition(0) //loading too many items quickfix
     }
 
 
@@ -122,24 +119,25 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
             chip.textAlignment = CENTER_VERTICAL
             binding!!.priceGroup.addView(chip)
         }
-        binding!!.priceGroup.check(1)
+
+        binding!!.priceGroup.clearCheck()
+        binding!!.priceGroup.check(viewModel.price)
+        Log.e("checked", binding!!.priceGroup.checkedChipId.toString())
 
 
         val cadapter = ArrayAdapter(
             context!!,
             R.layout.country_menu_item,
             viewModel.countryMap.toList().map { it.second }
-
         )
         val editTextFilledExposedDropdown: AutoCompleteTextView =  binding!!.filledExposedDropdown
         editTextFilledExposedDropdown.setAdapter(cadapter)
 
         progressBar =  binding!!.progressBar
-        progressBarLayout =  binding!!.progressLayout
-        progressBarLayout.setVerticalGravity(CENTER_VERTICAL)
-        progressBarLayout.setHorizontalGravity(Gravity.CENTER_HORIZONTAL)
+        binding!!.progressLayout.setVerticalGravity(CENTER_VERTICAL)
+        binding!!.progressLayout.setHorizontalGravity(Gravity.CENTER_HORIZONTAL)
         recyclerView =  binding!!.restaurantList
-        progressBarLayout.setVerticalGravity(Gravity.BOTTOM)
+        binding!!.progressLayout.setVerticalGravity(Gravity.BOTTOM)
         progressBar.visibility = viewModel.progressVisibility
         binding?.emptyLayout?.visibility = View.GONE
 
@@ -155,7 +153,6 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
         recyclerView!!.layoutManager = LinearLayoutManager(this.context)
         recyclerView!!.hasFixedSize()
         recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()!!
-        adapter?.notifyDataSetChanged()
         Log.d("onviewcreate", "Adapter Size-" + adapter?.itemCount.toString())
         return  binding!!.root
     }

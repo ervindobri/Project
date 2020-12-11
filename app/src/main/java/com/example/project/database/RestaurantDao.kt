@@ -26,10 +26,7 @@ interface RestaurantDao {
     @Query("SELECT * FROM restaurants WHERE favorite = 1 ORDER BY NAME ASC")
     fun getFavoritesLive() : LiveData<List<RestaurantData>>
 
-//    @Query("SELECT * FROM restaurants WHERE favorite = 1 ORDER BY NAME ASC")
-//    fun getFavorites() : List<RestaurantData>
 
-//    @Query("UPDATE restaurants SET images=:images WHERE id = :rid")
     @Update(entity = RestaurantData::class)
     suspend fun updateRestaurant(obj: RestaurantUpdate)
 }

@@ -13,13 +13,11 @@ import androidx.fragment.app.Fragment
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.room.Room
 import com.example.project.adapters.FavoriteAdapter
-import com.example.project.vmodels.ProfileViewModel
-import com.example.project.databinding.ProfileFragmentBinding
-import com.example.project.database.UserDatabase
 import com.example.project.database.UserUpdate
+import com.example.project.databinding.ProfileFragmentBinding
 import com.example.project.models.RestaurantData
+import com.example.project.vmodels.ProfileViewModel
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialSharedAxis
 
@@ -168,11 +166,6 @@ class ProfileFragment : Fragment(), FavoriteAdapter.SelectedRestaurant {
         findNavController().navigate(
             ProfileFragmentDirections.actionProfileFragmentToDetailFragment(restaurant)
         )
-    }
-
-    override fun onDestroy() {
-        viewModel.closeDB()
-        super.onDestroy()
     }
 
 }

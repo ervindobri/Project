@@ -16,13 +16,6 @@ abstract class UserDatabase : RoomDatabase() {
     companion object {
         @Volatile
         private var INSTANCE: UserDatabase? = null
-
-        fun closeDB(){
-            synchronized(this){
-                INSTANCE?.close()
-            }
-        }
-
         fun getDatabase(context: Context): UserDatabase {
             val temInstance = INSTANCE
             if(null != temInstance) {

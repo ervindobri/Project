@@ -13,7 +13,7 @@ class RestaurantRepository(private val dao: RestaurantDao) {
 
      suspend fun getAll(country: String, name: String, price: Int?, address: String, city: String, zipCode: String, page: Int?) : ResponseData {
         try {
-            Log.d("stuff", "country:$country $name $price $address $city $zipCode $page")
+            Log.d("stuff", "country:$country , name: $name , price:$price, address: $address , city:$city , zipCode: $zipCode , page:$page")
             val response = RetrofitClient.api.filterRestaurants(country,name,price,address,city,zipCode,page)
             response.restaurants.forEach {
                 val found  = dao.findByID(it.id)

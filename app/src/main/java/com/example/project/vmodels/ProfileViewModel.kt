@@ -4,12 +4,12 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.example.project.database.UserDatabase
-import com.example.project.models.RestaurantData
-import com.example.project.models.RestaurantRepository
 import com.example.project.database.RestaurantDatabase
 import com.example.project.database.User
+import com.example.project.database.UserDatabase
 import com.example.project.database.UserUpdate
+import com.example.project.models.RestaurantData
+import com.example.project.models.RestaurantRepository
 import com.example.project.models.UserRepository
 import kotlinx.coroutines.launch
 
@@ -36,10 +36,5 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun closeDB() {
-        viewModelScope.launch {
-            UserDatabase.closeDB()
-        }
-    }
 
 }

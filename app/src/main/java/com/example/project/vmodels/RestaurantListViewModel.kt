@@ -8,13 +8,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.project.api.RetrofitClient
-import com.example.project.models.*
 import com.example.project.database.RestaurantDatabase
+import com.example.project.models.ResponseData
+import com.example.project.models.RestaurantData
+import com.example.project.models.RestaurantRepository
+import com.example.project.models.RestaurantUpdate
 import kotlinx.coroutines.launch
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class RestaurantListViewModel(application: Application) : AndroidViewModel(application) {
+    val price: Int = 2
     var progressVisibility: Int = View.GONE
     val standardCountryCode: String = "US"
     val standardCountry: String = "United States"
@@ -35,7 +37,7 @@ class RestaurantListViewModel(application: Application) : AndroidViewModel(appli
     var filters: HashMap<String,Any?> = hashMapOf(
         "country" to standardCountryCode,
         "name" to "",
-        "price" to 1,
+        "price" to price,
         "address" to "",
         "city" to "",
         "zip" to "",
@@ -43,9 +45,7 @@ class RestaurantListViewModel(application: Application) : AndroidViewModel(appli
     )
 
 
-    var oldList : ArrayList<RestaurantData> = ArrayList()
-
-         var countryMap : MutableMap<String,String> = hashMapOf(
+    var countryMap : MutableMap<String,String> = hashMapOf(
             "AE" to "United Arab Emirates",
             "AW" to "Aruba",
             "CA" to "Canada",
@@ -67,12 +67,9 @@ class RestaurantListViewModel(application: Application) : AndroidViewModel(appli
             "VI" to  "Virgin Islands,US"
         )
 
-
     val emptyList : MutableLiveData<Boolean> =  MutableLiveData<Boolean>()
-
     private val repository: RestaurantRepository
     var favoritesLive : LiveData<List<RestaurantData>>? = null
-    var favorites : List<RestaurantData> = listOf()
     var restaurants : MutableLiveData<ArrayList<RestaurantData>> = MutableLiveData()
     lateinit var lastResponse : ResponseData
 
@@ -81,17 +78,13 @@ class RestaurantListViewModel(application: Application) : AndroidViewModel(appli
         filtering = false
         val dao = RestaurantDatabase.getDatabase(application).restaurantDao()
         repository = RestaurantRepository(dao)
-//        favorites = repository.favorites
         favoritesLive = repository.favoritesLive
-
-//        setFilters(standardCountry,null,null,null,null,null,currentPage)
         getRestaurants()
     }
 
      fun updateRestaurant(obj : RestaurantUpdate){
          viewModelScope.launch {
              repository.update(obj)
-
          }
     }
 
@@ -133,7 +126,6 @@ class RestaurantListViewModel(application: Application) : AndroidViewModel(appli
                 //get old list if no empty and add to temp list
                 val temp: ArrayList<RestaurantData> = restaurants.value ?: ArrayList()
                 temp.addAll(response.restaurants)
-
                 //new list contains all values
                 restaurants.value = temp
                 lastResponse = response
