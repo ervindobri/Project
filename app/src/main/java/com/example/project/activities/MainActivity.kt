@@ -10,12 +10,10 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.room.Room
 import com.example.project.R
-import com.example.project.database.AppDatabase
+import com.example.project.database.UserDatabase
 import com.example.project.database.User
 import com.example.project.fragments.DetailFragment
 import com.example.project.fragments.ProfileFragment
-import com.example.project.fragments.ProfileFragmentDirections
-import com.example.project.models.RestaurantData
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -59,7 +57,7 @@ class MainActivity : AppCompatActivity() {
     private fun initPersistency() {
         val db = Room.databaseBuilder(
             applicationContext,
-            AppDatabase::class.java,
+            UserDatabase::class.java,
             "users"
         ).build()
         //Insert Case

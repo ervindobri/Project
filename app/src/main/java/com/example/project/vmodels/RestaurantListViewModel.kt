@@ -16,8 +16,8 @@ import kotlin.collections.HashMap
 
 class RestaurantListViewModel(application: Application) : AndroidViewModel(application) {
     var progressVisibility: Int = View.GONE
-    val standardCountryCode: String = "MX"
-    val standardCountry: String = "Mexico"
+    val standardCountryCode: String = "US"
+    val standardCountry: String = "United States"
 
     val request = RetrofitClient.api
 

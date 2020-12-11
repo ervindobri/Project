@@ -26,4 +26,8 @@
     <string name="contactLabel">Contact</string>
     <string name="favoritesLabel">Favorites</string>
     <string name="edit_profile">Edit</string>
+    <string name="edit_email">Email</string>
+    <string name="edit_name">First and Last name</string>
+    <string name="edit_address">Address</string>
+    <string name="edit_phone">Phone number</string>
 </resources>

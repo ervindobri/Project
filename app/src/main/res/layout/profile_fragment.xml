@@ -106,7 +106,7 @@
                             android:text="@string/edit_profile"
                             app:iconGravity="textStart" android:textColor="#FFFFFF" android:textAlignment="center"
                             app:icon="@drawable/ic_baseline_edit_24"
-                            android:id="@+id/materialButton" app:layout_constraintBottom_toBottomOf="parent"
+                            android:id="@+id/editButton" app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintVertical_bias="1.0" app:cornerRadius="15dp"/>
@@ -154,5 +154,268 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:gravity="center" android:layout_gravity="center"
+            android:visibility="gone" android:id="@+id/editLayout" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp" android:layout_marginStart="32dp" android:layout_marginEnd="32dp"
+            android:elevation="5dp" android:alpha="5">
+        <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" app:cardCornerRadius="25dp" android:visibility="visible"
+                android:id="@+id/editCard" app:cardBackgroundColor="@color/colorAccent"
+                app:cardMaxElevation="5dp" android:longClickable="true" android:clickable="true"
+                android:focusable="true">
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" android:gravity="center|top">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    <TextView
+                            android:text="@string/edit_profile"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" android:id="@+id/textView"
+                            android:textAlignment="center" android:textSize="24sp"
+                            android:textColor="#FFFFFF"
+                            android:fontFamily="@font/raleway_bold" android:layout_margin="15dp"
+                            android:layout_marginBottom="1dp"
+                            app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:layout_marginStart="15dp" android:layout_marginEnd="15dp"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+                    <ScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/scrollView2" android:layout_marginTop="64dp"
+                            app:layout_constraintTop_toBottomOf="@+id/textView"
+                            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+                            app:layout_constraintEnd_toEndOf="@id/linearLayout2"
+                            app:layout_constraintStart_toStartOf="@id/textView"
+                            android:layout_marginBottom="64dp" android:fillViewport="false"
+                            style="@android:style/Widget.Material.Light.ScrollView"
+                            android:clipToPadding="false" android:addStatesFromChildren="true"
+                            android:clipChildren="false" android:clickable="true">
+                        <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" android:minHeight="200dp">
+                            <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" android:layout_marginStart="15dp"
+                                    android:layout_marginEnd="15dp">
+                                <TextView
+                                        android:text="@string/edit_name"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:id="@+id/editNameLabel"
+                                        android:textColor="@color/white" android:textSize="18sp"
+                                        android:fontFamily="@font/raleway_semibold"
+                                        android:layout_marginStart="10dp"
+                                        android:layout_marginEnd="25dp" android:layout_marginTop="10dp"
+                                        android:layout_marginBottom="5dp"/>
+                                <com.google.android.material.textfield.TextInputLayout
+                                        android:id="@+id/firstNameTextField"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        app:boxStrokeColor="@color/pink"
+                                        app:boxBackgroundColor="@color/white"
+                                        app:hintTextColor="@color/black_50"
+                                        android:enabled="true"
+                                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                        android:layout_marginStart="10dp">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                            android:singleLine="true"
+                                            android:fontFamily="@font/raleway_bold"
+                                            android:textSize="18sp" android:inputType="textPersonName"
+                                            android:layout_marginEnd="15dp"/>
+                                </com.google.android.material.textfield.TextInputLayout>
+                                <com.google.android.material.textfield.TextInputLayout
+                                        android:id="@+id/lastNameTextField"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        app:boxStrokeColor="@color/pink"
+                                        app:boxBackgroundColor="@color/white"
+                                        app:hintTextColor="@color/black_50"
+                                        android:enabled="true"
+                                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                        android:layout_marginStart="10dp">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                            android:singleLine="true"
+                                            android:fontFamily="@font/raleway_bold"
+                                            android:textSize="18sp" android:inputType="textPersonName"
+                                            android:layout_marginEnd="15dp"/>
+
+                                </com.google.android.material.textfield.TextInputLayout>
+                            </LinearLayout>
+                            <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="15dp" android:layout_marginEnd="15dp">
+                                <TextView
+                                        android:text="@string/edit_address"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:id="@+id/editAddressLabel"
+                                        android:textColor="@color/white" android:textSize="18sp"
+                                        android:fontFamily="@font/raleway_semibold"
+                                        android:layout_marginStart="10dp"
+                                        android:layout_marginEnd="25dp" android:layout_marginTop="10dp"
+                                        android:layout_marginBottom="5dp"/>
+                                <com.google.android.material.textfield.TextInputLayout
+                                        android:id="@+id/addressTextField"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        app:boxStrokeColor="@color/pink"
+                                        app:boxBackgroundColor="@color/white"
+                                        app:hintTextColor="@color/black_50"
+                                        android:enabled="true"
+                                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                        android:layout_marginStart="10dp">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                            android:singleLine="true"
+                                            android:fontFamily="@font/raleway_bold"
+                                            android:textSize="18sp" android:inputType="textPostalAddress"
+                                            android:layout_marginEnd="15dp"/>
+
+                                </com.google.android.material.textfield.TextInputLayout>
+                            </LinearLayout>
+                            <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp" android:layout_marginStart="15dp"
+                                    android:layout_marginEnd="15dp">
+                                <TextView
+                                        android:text="@string/edit_phone"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:id="@+id/editPhone"
+                                        android:textColor="@color/white" android:textSize="18sp"
+                                        android:fontFamily="@font/raleway_semibold"
+                                        android:layout_marginStart="10dp"
+                                        android:layout_marginEnd="25dp" android:layout_marginTop="10dp"
+                                        android:layout_marginBottom="5dp"/>
+                                <com.google.android.material.textfield.TextInputLayout
+                                        android:id="@+id/phoneTextfield"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        app:boxStrokeColor="@color/pink"
+                                        app:boxBackgroundColor="@color/white"
+                                        app:hintTextColor="@color/black_50"
+                                        android:enabled="true"
+                                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                        android:layout_marginStart="10dp">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                            android:singleLine="true"
+                                            android:fontFamily="@font/raleway_bold"
+                                            android:textSize="18sp" android:inputType="phone"
+                                            android:layout_marginEnd="15dp"/>
+
+                                </com.google.android.material.textfield.TextInputLayout>
+                            </LinearLayout>
+                            <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" android:layout_margin="15dp">
+                                <TextView
+                                        android:text="@string/edit_email"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:id="@+id/filterZipLabel"
+                                        android:textColor="@color/white" android:textSize="18sp"
+                                        android:fontFamily="@font/raleway_semibold"
+                                        android:layout_marginStart="10dp"
+                                        android:layout_marginEnd="25dp" android:layout_marginTop="10dp"
+                                        android:layout_marginBottom="5dp"/>
+                                <com.google.android.material.textfield.TextInputLayout
+                                        android:id="@+id/emailTextField"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        app:boxStrokeColor="@color/pink"
+                                        app:boxBackgroundColor="@color/white"
+                                        app:hintTextColor="@color/black_50"
+                                        android:enabled="true"
+                                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                        android:layout_marginStart="10dp">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                            android:singleLine="true"
+                                            android:fontFamily="@font/raleway_bold"
+                                            android:textSize="18sp" android:inputType="numberSigned"
+                                            android:elevation="3dp" android:layout_marginEnd="15dp"/>
+
+                                </com.google.android.material.textfield.TextInputLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </ScrollView>
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="bottom|center"
+                            android:minHeight="85dp"
+                            android:id="@+id/linearLayout2"
+                            app:layout_constraintTop_toBottomOf="@+id/scrollView2"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent">
+                        <com.google.android.material.button.MaterialButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/editProfile"
+                                style="@style/Widget.MaterialComponents.Button.Icon"
+                                app:icon="@drawable/ic_baseline_edit_24"
+                                android:textColor="@color/colorPrimary"
+                                android:text="@string/edit_profile"
+                                app:iconTint="@color/colorPrimary"
+                                android:layout_marginEnd="15dp" android:layout_marginStart="15dp"
+                                android:layout_marginBottom="10dp"
+                                app:backgroundTint="@color/white" app:rippleColor="#FF7474"
+                                android:fontFamily="@font/raleway_bold" app:cornerRadius="8dp"
+                                android:minHeight="50dp" android:minWidth="50dp" app:elevation="5dp"/>
+                        <com.google.android.material.button.MaterialButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/closeEditProfile"
+                                android:text="@string/mr_controller_close_description"
+                                android:textAlignment="center"
+                                android:textColor="@color/colorPrimary" app:iconTint="@color/colorPrimary"
+                                android:layout_marginStart="15dp"
+                                android:layout_marginEnd="15dp" android:layout_marginBottom="10dp"
+                                app:backgroundTint="@color/white" app:rippleColor="#FF7474"
+                                android:fontFamily="@font/raleway_bold" app:cornerRadius="8dp"
+                                android:minHeight="50dp" android:minWidth="50dp" app:elevation="5dp"/>
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

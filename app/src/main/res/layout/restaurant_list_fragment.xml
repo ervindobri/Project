@@ -25,7 +25,7 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" android:gravity="center_horizontal|center_vertical"
-                android:id="@+id/emptyLayout" android:visibility="gone">
+                android:id="@+id/emptyLayout" android:visibility="visible">
             <TextView
                     android:text="@string/empty_list"
                     android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                     android:src="@drawable/ic_baseline_hourglass_empty_24"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" android:id="@+id/imageView"
-            />
+                    app:srcCompat="@drawable/ic_baseline_face_24"/>
         </LinearLayout>
         <LinearLayout
                 android:orientation="horizontal"

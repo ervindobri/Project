@@ -1,21 +1,23 @@
 package com.example.project.models
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.room.Room
-import com.example.project.database.AppDatabase
+import com.example.project.database.UserDatabase
 import com.example.project.database.User
+import com.example.project.database.UserDao
+import com.example.project.database.UserUpdate
 
 
-class UserRepository(context: Context) {
+class UserRepository(private val userDAO : UserDao) {
     private val DB_NAME = "users"
-    private val userDatabase: AppDatabase = Room.databaseBuilder(context, AppDatabase::class.java, DB_NAME).build()
 
     fun insertUser(
         firstName: String?,
         lastName: String?,
         emailAddress: String?,
         address: String?,
-        picture: ByteArray?,
+        picture: String?,
         phone: String?
     ) {
         val user = User(
@@ -30,22 +32,25 @@ class UserRepository(context: Context) {
         insertUser(user)
     }
 
+    suspend fun updateUser(obj: UserUpdate){
+        userDAO.updateUser(obj)
+    }
     fun insertUser(user: User) {
         val thread  = Thread{
-            userDatabase.userDao().insertAll(user)
+            userDAO.insertAll(user)
         }
         thread.start()
     }
 
     fun getMaxID(): Int{
-        return userDatabase.userDao().getMaxID()
+        return userDAO.getMaxID()
     }
 
-    fun getUser(id: Int): User {
-        return userDatabase.userDao().getUser(id)
+    fun getUser(id: Int): LiveData<User> {
+        return userDAO.getUser(id)
     }
 
     val users: List<User>
-        get() = userDatabase.userDao().getAll()
+        get() = userDAO.getAll()
 
 }

@@ -58,6 +58,7 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
     private fun setLayoutListeners() {
         viewModel.emptyList.observe(viewLifecycleOwner, {
             binding?.emptyLayout?.visibility = if (it) View.VISIBLE else View.GONE;
+            viewModel.progressVisibility = View.GONE;
         })
     }
 

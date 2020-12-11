@@ -1,5 +1,6 @@
 package com.example.project.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
@@ -8,7 +9,7 @@ interface UserDao {
     fun getAll(): List<User>
 
     @Query("SELECT * FROM user WHERE uid IN (:userId)")
-    fun getUser(userId: Int): User
+    fun getUser(userId: Int): LiveData<User>
 
     @Query("SELECT * FROM user WHERE first_name LIKE :first AND " +
             "last_name LIKE :last LIMIT 1")
@@ -24,5 +25,5 @@ interface UserDao {
     fun getMaxID(): Int
 
     @Update(entity = User::class)
-    fun updateUser(obj: UserUpdate)
+    suspend fun updateUser(obj: UserUpdate)
 }
