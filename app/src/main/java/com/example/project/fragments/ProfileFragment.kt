@@ -1,6 +1,8 @@
 package com.example.project.fragments
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.transition.TransitionManager
@@ -13,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.project.adapters.FavoriteAdapter
 import com.example.project.database.UserUpdate
 import com.example.project.databinding.ProfileFragmentBinding
@@ -50,6 +53,8 @@ class ProfileFragment : Fragment(), FavoriteAdapter.SelectedRestaurant {
             binding?.contactAddress?.text = (it.address)
             binding?.contactMail?.text = (it.emailAddress)
             binding?.contactPhone?.text = (it.phone)
+            Glide.with(binding!!.root.context).load(it.picture).into(binding!!.profileImage)
+
         })
 
         val viewPager = binding?.viewPager
@@ -137,9 +142,9 @@ class ProfileFragment : Fragment(), FavoriteAdapter.SelectedRestaurant {
                     viewModel.currentUser.value?.uid ?: 1,
                     binding?.firstNameTextField?.editText?.text.toString(),
                     binding?.lastNameTextField?.editText?.text.toString(),
-                    binding?.addressTextField?.editText?.text.toString(),
                     binding?.emailTextField?.editText?.text.toString(),
-                    null,
+                    binding?.addressTextField?.editText?.text.toString(),
+                    viewModel.currentUser.value!!.picture,
                     binding?.phoneTextfield?.editText?.text.toString(),
                 )
             )
@@ -152,10 +157,42 @@ class ProfileFragment : Fragment(), FavoriteAdapter.SelectedRestaurant {
             TransitionManager.beginDelayedTransition( binding!!.root, transition)
             binding!!.editLayout.visibility = View.GONE
         }
+        binding?.profileImage?.setOnLongClickListener{
+            val intent = Intent()
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+            true;
+        }
 
     }
 
     //TODO: ADD PIcture and edit picture
+    @SuppressLint("CheckResult")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // When an Image is picked
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK && null != data) {
+            val image: String? = data.getStringExtra("IMAGE_KEY")
+            if (data.data != null) {
+                binding?.profileImage?.let { Glide.with(binding!!.root.context).load(data.data!!).into(it) }
+                viewModel.currentUser.value!!.picture = data.data!!.toString();
+                viewModel.updateUser(
+                    UserUpdate(
+                        viewModel.currentUser.value!!.uid,
+                        viewModel.currentUser.value!!.firstName,
+                        viewModel.currentUser.value!!.lastName,
+                        viewModel.currentUser.value!!.emailAddress,
+                        viewModel.currentUser.value!!.address,
+                        viewModel.currentUser.value!!.picture,
+                        viewModel.currentUser.value!!.phone,
+                    )
+                )
+            }
+        }
+    }
+
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

@@ -13,7 +13,7 @@ data class ResponseData(
     val restaurants: ArrayList<RestaurantData>
 ) {
     override fun toString(): String {
-        return "ResponseData(total_entries=$total_entries, per_page=$per_page, current_page=$current_page, restaurants=${restaurants?.size})"
+        return "ResponseData(total_entries=$total_entries, per_page=$per_page, current_page=$current_page, restaurants=${restaurants.size})"
     }
 }
 

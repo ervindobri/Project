@@ -183,15 +183,16 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
          binding?.fabHome?.setOnClickListener {
             //Load back current filters if there are
             if ( viewModel.filters.isNotEmpty()){
-                 binding!!.priceGroup.check(viewModel.filters["price"].toString().toInt())
-                 binding!!.addressTextField.editText?.setText(viewModel.filters["address"].toString())
-                 binding!!.cityTextField.editText?.setText(viewModel.filters["city"].toString())
-                 binding!!.zipCodeTextField.editText?.setText(viewModel.filters["zip"].toString())
+                binding!!.filledExposedDropdown.setText(viewModel.standardCountry)
+                binding!!.priceGroup.check(viewModel.filters["price"].toString().toInt())
+                binding!!.addressTextField.editText?.setText(viewModel.filters["address"].toString())
+                binding!!.cityTextField.editText?.setText(viewModel.filters["city"].toString())
+                binding!!.zipCodeTextField.editText?.setText(viewModel.filters["zip"].toString())
             }
              binding!!.filledExposedDropdown.setAdapter (ArrayAdapter(
-                 context!!,
-                 R.layout.country_menu_item,
-                 viewModel.countryMap.toList().map { it.second }
+                context!!,
+                R.layout.country_menu_item,
+                viewModel.countryMap.toList().map { it.second }
              ))
 
             val transition = buildContainerTransformation()

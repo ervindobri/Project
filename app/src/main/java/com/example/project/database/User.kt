@@ -11,28 +11,10 @@ data class User(
     @ColumnInfo(name = "last_name") val lastName: String?,
     @ColumnInfo(name = "email_address") val emailAddress: String?,
     @ColumnInfo(name = "address") val address: String?,
-    @ColumnInfo(name = "profile_picture") val picture: String?,
+    @ColumnInfo(name = "profile_picture") var picture: String?,
     @ColumnInfo(name = "phone") val phone: String?,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
 
-        other as User
-
-        if (uid != other.uid) return false
-        if (firstName != other.firstName) return false
-        if (lastName != other.lastName) return false
-        if (emailAddress != other.emailAddress) return false
-        if (address != other.address) return false
-        if (picture != null) {
-            if (other.picture == null) return false
-            if (!picture.contentEquals(other.picture)) return false
-        } else if (other.picture != null) return false
-        if (phone != other.phone) return false
-
-        return true
-    }
 
 
     override fun toString(): String {
@@ -49,6 +31,23 @@ data class User(
         result = 31 * result + (phone?.hashCode() ?: 0)
         return result
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as User
+
+        if (uid != other.uid) return false
+        if (firstName != other.firstName) return false
+        if (lastName != other.lastName) return false
+        if (emailAddress != other.emailAddress) return false
+        if (address != other.address) return false
+        if (picture != other.picture) return false
+        if (phone != other.phone) return false
+
+        return true
+    }
 }
 
 @Entity
@@ -60,4 +59,6 @@ class UserUpdate (
     @ColumnInfo(name = "address") val address: String?,
     @ColumnInfo(name = "profile_picture") val picture: String?,
     @ColumnInfo(name = "phone") val phone: String?,
-)
+){
+
+}
