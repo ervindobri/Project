@@ -25,9 +25,6 @@ class RestaurantRepository(private val dao: RestaurantDao) {
                     // last image means we added it there :)
                     it.image_url = found.images[found.images.size-1]
                 }
-                else{
-                    it.image_url = it.images[0]
-                }
             }
             return response
         }

@@ -10,22 +10,23 @@
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:scrollbars="none" app:layout_constraintHorizontal_bias="0.0"
-    >
+            app:layout_constraintTop_toTopOf="parent">
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/linearLayout"
-                android:layout_gravity="bottom" android:gravity="bottom" android:layout_marginTop="50dp">
+                android:gravity="bottom|center_horizontal">
             <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" app:cardCornerRadius="25dp" app:cardElevation="15dp"
                     android:layout_marginTop="35dp" android:layout_marginEnd="35dp" android:layout_marginStart="35dp"
-                    android:layout_marginBottom="55dp" android:layout_gravity="top" app:cardBackgroundColor="#FFF9F9"
-                    app:cardMaxElevation="15dp" android:minWidth="200dp">
+                    android:layout_marginBottom="55dp"
+                    app:cardBackgroundColor="#FFF9F9"
+                    app:cardMaxElevation="15dp" android:minWidth="200dp"
+                    android:layout_gravity="center_horizontal|center_vertical">
                 <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="match_parent"
@@ -103,8 +104,9 @@
             <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="170dp" android:gravity="bottom" android:background="@drawable/rounded_image"
-            >
+                    android:layout_height="wrap_content" android:gravity="bottom"
+                    android:background="@drawable/rounded_image"
+                    android:paddingBottom="25dp" android:minHeight="200dp">
                 <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="match_parent"

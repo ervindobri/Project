@@ -10,13 +10,11 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SortedList
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.project.R
 import com.example.project.models.RestaurantData
 import jp.wasabeef.glide.transformations.BlurTransformation
-import kotlinx.android.synthetic.main.list_item_restaurant.view.*
 
 class RestaurantAdapter(
     private val context: Context,
