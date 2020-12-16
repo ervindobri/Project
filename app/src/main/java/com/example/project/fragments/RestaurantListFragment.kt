@@ -177,9 +177,11 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
 //   TODO:display current filters on top of list
 
     private fun setClickListeners() {
+        //Go To top of recyclerview
         binding?.fabGoTop?.setOnClickListener{
             recyclerView?.smoothScrollToPosition(0)
         }
+        //Open filter layout with fancy animation
          binding?.fabHome?.setOnClickListener {
             //Load back current filters if there are
             if ( viewModel.filters.isNotEmpty()){
@@ -204,7 +206,8 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
              binding!!.filterLayout.visibility = View.VISIBLE
              binding!!.fabHome.visibility = View.INVISIBLE
         }
-         binding?.closeFilters?.setOnClickListener{
+        //Close filter layout
+        binding?.closeFilters?.setOnClickListener{
             val transition = buildContainerTransformation()
             transition.startView =  binding!!.filterLayout
             transition.endView =  binding!!.fabHome
@@ -212,10 +215,11 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
             transition.addTarget( binding!!.fabHome)
 
             TransitionManager.beginDelayedTransition( binding!!.root, transition)
-             binding!!.filterLayout.visibility = View.GONE
-             binding!!.fabHome.visibility = View.VISIBLE
+            binding!!.filterLayout.visibility = View.GONE
+            binding!!.fabHome.visibility = View.VISIBLE
         }
-         binding?.applyFilters?.setOnClickListener{
+        //Apply filters and set restaurants
+        binding?.applyFilters?.setOnClickListener{
             //Apply filters
             Log.d(
                 "filters", ( binding!!.priceGroup.checkedChipId.toString() + ", "
@@ -249,14 +253,13 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
             transition.startView =  binding!!.filterLayout
             transition.endView =  binding!!.fabHome
             transition.addTarget( binding!!.fabHome)
-
-             TransitionManager.beginDelayedTransition( binding!!.root, transition)
-             binding!!.filterLayout.visibility = View.GONE
-             binding!!.fabHome.visibility = View.VISIBLE
+            TransitionManager.beginDelayedTransition( binding!!.root, transition)
+            binding!!.filterLayout.visibility = View.GONE
+            binding!!.fabHome.visibility = View.VISIBLE
         }
     }
 
-    fun View.hideKeyboard() {
+    private fun View.hideKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
@@ -267,14 +270,15 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
         val searchItem = menu.findItem(R.id.action_search)
         searchView = searchItem.actionView as SearchView
         searchView.setOnQueryTextListener(this)
-//        searchView.setOnCloseListener(object : SearchView.OnCloseListener {
-//            override fun onClose(): Boolean {
-////                adapter?.replaceItems(viewModel.oldList)
-//                recyclerView?.scrollToPosition(0)
-//                // Do your stuff
-//                return false
-//            }
-//        })
+        searchView.setOnCloseListener(object : SearchView.OnCloseListener {
+            override fun onClose(): Boolean {
+                adapter!!.clearItems();
+                viewModel.setFilters(viewModel.standardCountry, "", null, "", "","",1);
+                recyclerView?.smoothScrollToPosition(0)
+                viewModel.getRestaurants()
+                return false
+            }
+        })
 
         return (super.onCreateOptionsMenu(menu, inflater));
     }
@@ -282,7 +286,6 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
     override fun onQueryTextChange(query: String): Boolean {
         return true
     }
-
     override fun onQueryTextSubmit(query: String?): Boolean {
         adapter!!.clearItems();
         viewModel.setFilters(
@@ -295,6 +298,9 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
         return true
     }
 
+
+
+    //Override listener interface for adapter
     override fun showDetails(restaurant: RestaurantData) {
         findNavController().navigate(
             RestaurantListFragmentDirections.actionRestaurantListFragmentToDetailFragment(restaurant)
@@ -305,9 +311,11 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
         viewModel.addToFavorites(restaurant)
     }
 
-    override fun onDestroyView() {
-        recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()!!
-        super.onDestroyView()
-    }
+
+    //Restore state - not working?
+//    override fun onDestroyView() {
+//        recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()!!
+//        super.onDestroyView()
+//    }
 
 }

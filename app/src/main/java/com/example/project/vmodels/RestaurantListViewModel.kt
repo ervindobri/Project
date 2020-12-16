@@ -131,11 +131,18 @@ class RestaurantListViewModel(application: Application) : AndroidViewModel(appli
                 lastResponse = response
                 isLoading = false
                 emptyList.value = temp.size == 0
-
             }
         }
     }
 
+    fun findRestaurant(id : Int): MutableLiveData<RestaurantData> {
+        val result = MutableLiveData<RestaurantData>()
+        viewModelScope.launch {
+            val temp =  repository.findRestaurant(id)
+            result.postValue(temp)
+        }
+        return result
+    }
 
     fun addToFavorites(restaurant: RestaurantData){
         viewModelScope.launch {

@@ -61,36 +61,9 @@ class ProfileFragment : Fragment(), FavoriteAdapter.SelectedRestaurant {
         val adapter = FavoriteAdapter(this)
         viewPager?.adapter = adapter
         viewModel.favoritesLive.observe(this.viewLifecycleOwner, { adapter.setData(it) })
-
-        Log.d("view pager:", viewPager?.adapter?.itemCount.toString())
         return binding!!.root
     }
 
-
-
-
-
-//    @SuppressLint("SetTextI18n")
-//    private fun fetchUserInfo() {
-//        //fetch Records
-//        val db = Room.databaseBuilder(
-//            binding!!.root.context,
-//            UserDatabase::class.java, "users"
-//        ).build()
-//        val thread = Thread{
-//            if ( db.userDao().getAll().size > 0){
-//                viewModel.currentUser = db.userDao().getAll().first()
-//                db.close()
-//                val user = viewModel.currentUser!!
-//                binding!!.contactName.text = user.firstName + " " + user.lastName
-//                binding!!.contactAddress.text = user.address
-//                binding!!.contactMail.text = user.emailAddress
-//                binding!!.contactPhone.text = user.phone
-//            }
-//        }
-//        thread.start()
-//        db.close()
-//    }
 
     private fun buildContainerTransformation() =
         MaterialContainerTransform().apply {
@@ -113,9 +86,6 @@ class ProfileFragment : Fragment(), FavoriteAdapter.SelectedRestaurant {
                 binding?.phoneTextfield?.editText?.setText(it.phone)
                 binding?.emailTextField?.editText?.setText(it.emailAddress)
             })
-
-            //todo: select image from gallery
-
             //openlayout
             val transition = buildContainerTransformation()
             transition.startView =  binding!!.editButton
@@ -167,7 +137,6 @@ class ProfileFragment : Fragment(), FavoriteAdapter.SelectedRestaurant {
 
     }
 
-    //TODO: ADD PIcture and edit picture
     @SuppressLint("CheckResult")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

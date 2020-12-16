@@ -59,6 +59,4 @@ class UserUpdate (
     @ColumnInfo(name = "address") val address: String?,
     @ColumnInfo(name = "profile_picture") val picture: String?,
     @ColumnInfo(name = "phone") val phone: String?,
-){
-
-}
+)

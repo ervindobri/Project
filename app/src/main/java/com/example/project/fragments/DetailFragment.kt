@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
@@ -37,19 +38,14 @@ class DetailFragment : Fragment(){
     private lateinit var imageSlider: SliderLayout
     private lateinit var binding: DetailFragmentBinding
     private val args: DetailFragmentArgs by navArgs()
-    private val PROJECTION = arrayOf(MediaStore.Video.Media._ID)
-    private val QUERY = MediaStore.Video.Media.DISPLAY_NAME + " = ?"
-    private val collection =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) MediaStore.Video.Media.getContentUri(
-            MediaStore.VOLUME_EXTERNAL
-        ) else MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-
 
     @SuppressLint("SetTextI18n", "CheckResult")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        viewModel = ViewModelProvider(this).get(RestaurantListViewModel::class.java)
+
         enterTransition = MaterialFadeThrough()
         reenterTransition = MaterialFade()
         exitTransition = MaterialFadeThrough()
@@ -60,16 +56,20 @@ class DetailFragment : Fragment(){
         binding.cityView.text = args.restaurant.city + ", " + args.restaurant.country
         binding.priceRangeView.text = args.restaurant.priceRange()
         binding.buttonFavorite.isChecked = args.restaurant.favorite
-//        Glide.with(binding.root.context)
-//            .load("https://www.elitetraveler.com/wp-content/uploads/2007/02/Caelis_Barcelona_alta2A0200-1-730x450.jpg")
-////            .apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3))) // for blur
-//            .into(binding.restaurantImage)
+
+        viewModel.findRestaurant(args.restaurant.id).observe(viewLifecycleOwner, {
+            if ( it != null ) {
+                Log.e("boom", it.name)
+                args.restaurant.images = it.images
+                args.restaurant.images.distinct()
+            }
+        })
+
 
         imageSlider = binding.slider
 
         val listUrl: ArrayList<String> = ArrayList()
         val listName: ArrayList<String> = ArrayList()
-
         args.restaurant.images.forEach{
             listUrl.add(it);
             listName.add(it.lastIndex.toString())
@@ -84,23 +84,17 @@ class DetailFragment : Fragment(){
                 .description(listName[i])
                 .setRequestOption(requestOptions)
                 .setProgressBarVisible(true)
-//                .setOnSliderClickListener(this)
 
             imageSlider.addSlider(sliderView)
         }
 
-        // set Slider Transition Animation
-        // imageSlider.setPresetTransformer(SliderLayout.Transformer.Default);
-
-        // set Slider Transition Animation
-        // imageSlider.setPresetTransformer(SliderLayout.Transformer.Default);
         imageSlider.setPresetTransformer(SliderLayout.Transformer.Stack)
 
         imageSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom)
         imageSlider.setCustomAnimation(DescriptionAnimation())
         imageSlider.setDuration(4000)
-//        imageSlider.addOnPageChangeListener(this)
         imageSlider.stopCyclingWhenTouch(false)
+
         return binding.root
     }
 
@@ -114,27 +108,23 @@ class DetailFragment : Fragment(){
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(RestaurantListViewModel::class.java)
     }
 
+
+
+    //Handle result from opening Gallery and selecting a picture
     @SuppressLint("CheckResult")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         // When an Image is picked
         if (requestCode == 1 && resultCode == Activity.RESULT_OK && null != data) {
-            val image: String? = data.getStringExtra("IMAGE_KEY")
             if (data.data != null) {
                     val file: File = FileUtil.from(requireActivity(), data.data!!)
                     val requestOptions = RequestOptions()
                     requestOptions.centerCrop()
                     val sliderView = TextSliderView(binding.root.context)
                     args.restaurant.images.add(file.absolutePath)
-
-
-                    Log.e("file",args.restaurant.id.toString() + "with " + args.restaurant.images.size)
-
-                    viewModel.updateRestaurant(RestaurantUpdate(args.restaurant.id, args.restaurant.images))
-
+                    viewModel.addToFavorites(args.restaurant)
                     sliderView
                         .image(file)
                         .description(file.nameWithoutExtension)
@@ -147,12 +137,25 @@ class DetailFragment : Fragment(){
     }
 
     private fun setListeners() {
+        //Add image with intent from gallery
         binding.addImageCard.setOnClickListener{
             val intent = Intent()
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
         }
+        //Delete image button
+        binding.deleteImageButton.setOnClickListener{
+            if(imageSlider.sliderImageCount > 1){
+//                Log.e("current url:",imageSlider.currentSlider.url)
+                args.restaurant.images.remove(imageSlider.currentSlider.url)
+                imageSlider.removeSliderAt(imageSlider.currentPosition)
+            Log.e("new size:", args.restaurant.images.size.toString())
+                viewModel.addToFavorites(args.restaurant)
+            }
+
+        }
+        //Toggle favorite with button/card
         binding.favoriteCard.setOnClickListener{
             binding.buttonFavorite.isChecked = !binding.buttonFavorite.isChecked
             args.restaurant.favorite = binding.buttonFavorite.isChecked
@@ -160,13 +163,14 @@ class DetailFragment : Fragment(){
             Log.e("fav", args.restaurant.favorite.toString())
 
         }
+        //Open Google MAPS intent with bubble
         binding.mapCard.setOnClickListener{
             val uri = "http://maps.google.com/maps?q=loc:" + args.restaurant.lat.toString() + "," + args.restaurant.lng.toString()
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
             intent.setPackage("com.google.android.apps.maps");
             binding.root.context.startActivity(intent)
-            Log.d("map", "Opening map!")
         }
+        //Copy restaurant reserve number into dialer
         binding.callCard.setOnClickListener{
             val intent = Intent()
             intent.action = Intent.ACTION_DIAL // Action for what intent called for
@@ -176,6 +180,7 @@ class DetailFragment : Fragment(){
 
     }
 
+    //Stop auto-play
     override fun onStop() {
         binding.slider.stopAutoCycle()
         super.onStop()

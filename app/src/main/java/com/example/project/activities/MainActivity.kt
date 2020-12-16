@@ -17,7 +17,6 @@ import com.example.project.database.User
 import com.example.project.database.UserDatabase
 import com.example.project.fragments.DetailFragment
 import com.example.project.fragments.ProfileFragment
-import com.example.project.helpers.BottomNavigationViewHelper
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 

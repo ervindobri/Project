@@ -71,8 +71,6 @@ class RestaurantAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         // 1
         val restaurant = getItem(position)
-        if ( !restaurant.images.contains(restaurant.image_url)) restaurant.images.add(restaurant.image_url)
-
 
         holder.nameTextView.text = restaurant.name
         holder.addressTextView.text = restaurant.address

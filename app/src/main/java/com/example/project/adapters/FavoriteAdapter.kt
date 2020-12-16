@@ -40,11 +40,12 @@ class FavoriteAdapter(
 
     override fun bindVH(holder: FavoriteViewHolder, position: Int) {
         val restaurant = restaurants[position]
+        val image = if ( restaurant.images.size-1 >= 0) restaurant.images[restaurant.images.size-1] else "https://www.elitetraveler.com/wp-content/uploads/2007/02/Caelis_Barcelona_alta2A0200-1-730x450.jpg"
         holder.nameTextView.text = restaurant.name
         holder.addressTextView.text = restaurant.address
         holder.priceRangeTextView.text = restaurant.priceRange()
         Glide.with(holder.itemView.context)
-            .load("https://www.elitetraveler.com/wp-content/uploads/2007/02/Caelis_Barcelona_alta2A0200-1-730x450.jpg")
+            .load(image)
             .apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3)))
             .into(holder.thumbnailImageView)
 
