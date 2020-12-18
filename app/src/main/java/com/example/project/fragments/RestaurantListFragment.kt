@@ -55,8 +55,8 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
 
     private fun setLayoutListeners() {
         viewModel.emptyList.observe(viewLifecycleOwner, {
-            binding?.emptyLayout?.visibility = if (it) View.VISIBLE else View.GONE;
-            viewModel.progressVisibility = View.GONE;
+            binding?.emptyLayout?.visibility = if (it) View.VISIBLE else View.GONE
+            viewModel.progressVisibility = View.GONE
         })
     }
 
@@ -104,7 +104,7 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
         binding = RestaurantListFragmentBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this, RestaurantListViewModelFactory(requireActivity().application)).get(RestaurantListViewModel::class.java)
         viewModel.currentPage=0
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(true)
         enterTransition = MaterialFadeThrough()
         reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false).apply {
             duration = 80L
@@ -113,9 +113,9 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
         for (i in 1..4){
             val chip = inflater.inflate(R.layout.item_chip_choice,  binding!!.priceGroup, false) as Chip
             chip.text = "$".repeat(i)
-            chip.setId(i);
-            chip.setTag(i);
-            chip.setCheckable(true);
+            chip.id = i
+            chip.tag = i
+            chip.isCheckable = true
             chip.textAlignment = CENTER_VERTICAL
             binding!!.priceGroup.addView(chip)
         }
@@ -242,9 +242,9 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
             viewModel.filtering = true
             viewModel.currentPage = 0
             viewModel.progressVisibility = View.VISIBLE
-            adapter!!.clearItems();
+            adapter!!.clearItems()
 
-            getMoreItems();
+            getMoreItems()
 
             viewModel.progressVisibility = View.GONE
             binding!!.root.hideKeyboard()
@@ -266,19 +266,17 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.search_menu, menu);
+        inflater.inflate(R.menu.search_menu, menu)
         val searchItem = menu.findItem(R.id.action_search)
         searchView = searchItem.actionView as SearchView
         searchView.setOnQueryTextListener(this)
-        searchView.setOnCloseListener(object : SearchView.OnCloseListener {
-            override fun onClose(): Boolean {
-                adapter!!.clearItems();
-                viewModel.setFilters(viewModel.standardCountry, "", null, "", "","",1);
-                recyclerView?.smoothScrollToPosition(0)
-                viewModel.getRestaurants()
-                return false
-            }
-        })
+        searchView.setOnCloseListener {
+            adapter!!.clearItems()
+            viewModel.setFilters(viewModel.standardCountry, "", null, "", "", "", 1)
+            recyclerView?.smoothScrollToPosition(0)
+            viewModel.getRestaurants()
+            false
+        }
 
         return (super.onCreateOptionsMenu(menu, inflater));
     }
@@ -287,35 +285,29 @@ class RestaurantListFragment : Fragment(), SearchView.OnQueryTextListener, Resta
         return true
     }
     override fun onQueryTextSubmit(query: String?): Boolean {
-        adapter!!.clearItems();
+        adapter!!.clearItems()
         viewModel.setFilters(
             viewModel.standardCountry,
-            query ?: "",null,"","","",
-            1)
+            query ?: "",
+            null,
+            "",
+            "",
+            "",
+            1
+        )
         viewModel.getRestaurants()
 
         if ( recyclerView?.verticalScrollbarPosition!! > 0 ) recyclerView?.smoothScrollToPosition(0)
         return true
     }
-
-
-
     //Override listener interface for adapter
     override fun showDetails(restaurant: RestaurantData) {
+        //Navigate to detail fragment
         findNavController().navigate(
             RestaurantListFragmentDirections.actionRestaurantListFragmentToDetailFragment(restaurant)
         )
     }
-
     override fun addToFavorites(restaurant: RestaurantData) {
         viewModel.addToFavorites(restaurant)
     }
-
-
-    //Restore state - not working?
-//    override fun onDestroyView() {
-//        recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()!!
-//        super.onDestroyView()
-//    }
-
 }

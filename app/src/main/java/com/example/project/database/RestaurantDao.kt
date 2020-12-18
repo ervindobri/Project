@@ -12,7 +12,7 @@ interface RestaurantDao {
     fun getAll(): LiveData<List<RestaurantData>>
 
     @Query("SELECT * FROM restaurants WHERE id IN (:resID)")
-    suspend fun findByID(resID: Int): RestaurantData?
+    suspend fun findByID(resID: Long): RestaurantData?
 
 
     @Delete

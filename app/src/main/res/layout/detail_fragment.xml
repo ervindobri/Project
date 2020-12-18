@@ -9,16 +9,17 @@
 
     <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent"
+            android:layout_height="0dp" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:scrollbars="none" app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent"
+    >
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:id="@+id/linearLayout"
-                android:gravity="bottom|center_horizontal">
+                android:gravity="bottom" android:layout_gravity="bottom">
             <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" app:cardCornerRadius="25dp" app:cardElevation="15dp"
@@ -72,17 +73,30 @@
                                     android:autoSizeStepGranularity="2sp"
                                     android:layout_height="wrap_content" android:id="@+id/addressView"
                                     android:layout_weight="0" android:fontFamily="@font/raleway_semibold"
-                                    android:textColor="#393939" android:maxWidth="150dp"/>
+                                    android:textColor="#393939" android:maxWidth="150dp"
+                                    android:layout_marginTop="3dp" android:layout_marginBottom="3dp"/>
                             <TextView
                                     android:text="Spain"
                                     android:autoSizeTextType="uniform"
-                                    android:autoSizeMinTextSize="8sp"
-                                    android:autoSizeMaxTextSize="10sp"
+                                    android:autoSizeMinTextSize="10sp"
+                                    android:autoSizeMaxTextSize="14sp"
                                     android:autoSizeStepGranularity="2sp"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content" android:id="@+id/cityView"
-                                    android:layout_weight="0" android:fontFamily="@font/raleway_thin"
-                                    android:textColor="#393939" android:maxWidth="150dp"/>
+                                    android:layout_weight="0" android:fontFamily="@font/raleway_semibold"
+                                    android:textColor="#393939" android:maxWidth="150dp" android:textSize="14sp"
+                                    android:layout_marginTop="3dp" android:layout_marginBottom="3dp"/>
+                            <TextView
+                                    android:text="Area 51"
+                                    android:autoSizeTextType="uniform"
+                                    android:autoSizeMinTextSize="10sp"
+                                    android:autoSizeMaxTextSize="14sp"
+                                    android:autoSizeStepGranularity="2sp"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" android:id="@+id/areaView"
+                                    android:layout_weight="0" android:fontFamily="@font/raleway_semibold"
+                                    android:textColor="#393939" android:maxWidth="150dp" android:textSize="14sp"
+                                    android:layout_marginTop="3dp" android:layout_marginBottom="3dp"/>
                         </LinearLayout>
                         <LinearLayout
                                 android:orientation="vertical"
@@ -128,7 +142,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" android:gravity="bottom"
                     android:background="@drawable/rounded_image"
-                    android:paddingBottom="25dp" android:minHeight="200dp">
+                    android:paddingBottom="25dp" android:minHeight="170dp">
                 <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="match_parent"

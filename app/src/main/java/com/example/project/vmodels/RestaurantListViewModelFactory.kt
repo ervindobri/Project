@@ -8,5 +8,4 @@ class RestaurantListViewModelFactory(private val application: Application): View
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return modelClass.getConstructor(Application::class.java).newInstance(application)
     }
-
 }

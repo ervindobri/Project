@@ -20,7 +20,7 @@ data class ResponseData(
 @Entity(tableName = "restaurants")
 @TypeConverters(ArrayConverter::class)
 data class RestaurantData(
-    @PrimaryKey(autoGenerate = false) val id: Int = 0,
+    @PrimaryKey(autoGenerate = false) val id: Long = 0,
     val name: String = "",
     val address: String = "",
     val area: String = "",
@@ -52,7 +52,7 @@ data class RestaurantData(
     }
 
     @JvmName("getId1")
-    fun getId() :Int {
+    fun getId() :Long {
         return id
     }
     override fun toString(): String {

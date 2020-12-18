@@ -15,10 +15,10 @@ import kotlinx.coroutines.launch
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
-    lateinit var currentUser : LiveData<User>
+    var currentUser : LiveData<User>
     private val repository: RestaurantRepository
     private val userRepo: UserRepository
-    lateinit var favoritesLive : LiveData<List<RestaurantData>>
+    var favoritesLive : LiveData<List<RestaurantData>>
     lateinit var favorites : List<RestaurantData>
 
     init {

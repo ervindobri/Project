@@ -6,7 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private val baseURL = "https://ratpark-api.imok.space/"
+    private const val baseURL = "https://ratpark-api.imok.space/"
 
     private val retrofit by lazy {
         val interceptor = HttpLoggingInterceptor()

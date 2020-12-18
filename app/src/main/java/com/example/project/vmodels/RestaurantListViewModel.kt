@@ -12,22 +12,18 @@ import com.example.project.database.RestaurantDatabase
 import com.example.project.models.ResponseData
 import com.example.project.models.RestaurantData
 import com.example.project.models.RestaurantRepository
-import com.example.project.models.RestaurantUpdate
 import kotlinx.coroutines.launch
 
 class RestaurantListViewModel(application: Application) : AndroidViewModel(application) {
     val price: Int = 2
     var progressVisibility: Int = View.GONE
-    val standardCountryCode: String = "US"
+    private val standardCountryCode: String = "US"
     val standardCountry: String = "United States"
 
     val request = RetrofitClient.api
 
-    var searchString: String = ""
-
-    var position: Int = 0
-    private var PAGE_START : Int = 0;
-    var currentPage = PAGE_START
+    private var startPage : Int = 0
+    var currentPage = startPage
     var isLastPage: Boolean = false
 
     var isLoading: Boolean = false
@@ -64,7 +60,8 @@ class RestaurantListViewModel(application: Application) : AndroidViewModel(appli
             "SG" to  "Singapore" ,
             "SV" to  "El Salvador" ,
             "US" to  "United States" ,
-            "VI" to  "Virgin Islands,US"
+            "RO" to "Romania",
+            "VI" to  "Virgin Islands,US",
         )
 
     val emptyList : MutableLiveData<Boolean> =  MutableLiveData<Boolean>()
@@ -80,12 +77,6 @@ class RestaurantListViewModel(application: Application) : AndroidViewModel(appli
         repository = RestaurantRepository(dao)
         favoritesLive = repository.favoritesLive
         getRestaurants()
-    }
-
-     fun updateRestaurant(obj : RestaurantUpdate){
-         viewModelScope.launch {
-             repository.update(obj)
-         }
     }
 
     @JvmName("setFilters1")
@@ -135,7 +126,7 @@ class RestaurantListViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
-    fun findRestaurant(id : Int): MutableLiveData<RestaurantData> {
+    fun findRestaurant(id : Long): MutableLiveData<RestaurantData> {
         val result = MutableLiveData<RestaurantData>()
         viewModelScope.launch {
             val temp =  repository.findRestaurant(id)

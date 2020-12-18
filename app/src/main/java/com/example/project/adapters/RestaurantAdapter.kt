@@ -79,7 +79,6 @@ class RestaurantAdapter(
         holder.favoriteToggle.isChecked = getItem(holder.adapterPosition).favorite
 
         holder.favoriteToggle.setOnCheckedChangeListener { buttonView, isChecked ->
-            Log.d("holder-favorite", isChecked.toString())
             restaurant.favorite = isChecked
             holder.favoriteToggle.isChecked = isChecked
             selectedRestaurant.addToFavorites(restaurant)
@@ -91,7 +90,6 @@ class RestaurantAdapter(
             .into(holder.thumbnailImageView)
 
         holder.card.setOnClickListener { v ->
-            Log.d("holder", "Clicked!")
             selectedRestaurant.showDetails(restaurant)
         }
 
@@ -105,19 +103,6 @@ class RestaurantAdapter(
         return mSortedList.size
     }
 
-
-    fun addMoreItems(list: ArrayList<RestaurantData>){
-        val size = this.mSortedList.size
-        this.mSortedList.addAll(list)
-        val sizeNew = this.mSortedList.size
-        notifyItemRangeChanged(size, sizeNew)
-
-        Log.d("NEW SIZE:", mSortedList.size.toString())
-    }
-
-    fun getItems(): ArrayList<RestaurantData> {
-        return mSortedList
-    }
 
     fun setItems(list: ArrayList<RestaurantData>) {
         mSortedList = list

@@ -9,36 +9,35 @@ import kotlinx.coroutines.withContext
 
 class RestaurantRepository(private val dao: RestaurantDao) {
     val favoritesLive: LiveData<List<RestaurantData>> = dao.getFavoritesLive()
-//    val favorites: List<RestaurantData> = dao.getFavorites()
-//    val restaurants: ArrayList<RestaurantData> = getAll().restaurants
 
 
+    //Fetching restaurants async
      suspend fun getAll(country: String, name: String, price: Int?, address: String, city: String, zipCode: String, page: Int?) : ResponseData {
         try {
-            Log.d("stuff", "country:$country , name: $name , price:$price, address: $address , city:$city , zipCode: $zipCode , page:$page")
             val response = RetrofitClient.api.filterRestaurants(country,name,price,address,city,zipCode,page)
             response.restaurants.forEach {
                 val found  = dao.findByID(it.id)
                 it.images.add(it.image_url)
                 if ( found != null ){
-                    Log.d("found!", found.images.size.toString())
                     //its present in the favorites
                     it.favorite = found.favorite
                     it.images.addAll(found.images)
-                    it.images.distinct()
-                    // last image means we added it there :)
+                    it.images = it.images.distinct() as ArrayList<String>
+
+                    // display new image from local db
                     it.image_url = found.images[found.images.size-1]
                 }
             }
             return response
         }
         catch (e: Exception){
-            Log.i("retrofit-ex", e.message.toString())
+            Log.e("@@@ Retrofit-Exception", e.message.toString())
             return ResponseData(0,0,0, arrayListOf())
         }
     }
 
-    suspend fun findRestaurant(id : Int) : RestaurantData? = withContext(Dispatchers.IO){
+    //Finding specific restaurant
+    suspend fun findRestaurant(id : Long) : RestaurantData? = withContext(Dispatchers.IO){
         return@withContext dao.findByID(id)
 
     }

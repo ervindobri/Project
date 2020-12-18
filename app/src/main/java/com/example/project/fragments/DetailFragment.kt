@@ -4,24 +4,17 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat.startActivityForResult
-import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.request.RequestOptions
-import com.example.project.adapters.RestaurantAdapter
 import com.example.project.databinding.DetailFragmentBinding
-import com.example.project.models.RestaurantData
-import com.example.project.models.RestaurantUpdate
 import com.example.project.vmodels.RestaurantListViewModel
 import com.glide.slider.library.SliderLayout
 import com.glide.slider.library.animations.DescriptionAnimation
@@ -29,7 +22,7 @@ import com.glide.slider.library.slidertypes.TextSliderView
 import com.google.android.material.transition.platform.MaterialFade
 import com.google.android.material.transition.platform.MaterialFadeThrough
 import java.io.File
-import java.util.*
+import kotlin.collections.ArrayList
 
 
 class DetailFragment : Fragment(){
@@ -53,25 +46,26 @@ class DetailFragment : Fragment(){
         binding =  DetailFragmentBinding.inflate(inflater, container, false)
         binding.nameView.text = args.restaurant.name
         binding.addressView.text = args.restaurant.address
-        binding.cityView.text = args.restaurant.city + ", " + args.restaurant.country
+        binding.cityView.text = args.restaurant.city + ", " + viewModel.countryMap[args.restaurant.country]
+        binding.areaView.text = args.restaurant.area
         binding.priceRangeView.text = args.restaurant.priceRange()
         binding.buttonFavorite.isChecked = args.restaurant.favorite
 
+        //Merge images from local database if present, else keep image from api
         viewModel.findRestaurant(args.restaurant.id).observe(viewLifecycleOwner, {
             if ( it != null ) {
-                Log.e("boom", it.name)
-                args.restaurant.images = it.images
-                args.restaurant.images.distinct()
+                args.restaurant.images.addAll(it.images)
+                args.restaurant.images = args.restaurant.images.distinct() as ArrayList<String>
             }
         })
 
 
+        //Bind restaurant images to image slider
         imageSlider = binding.slider
-
         val listUrl: ArrayList<String> = ArrayList()
         val listName: ArrayList<String> = ArrayList()
         args.restaurant.images.forEach{
-            listUrl.add(it);
+            listUrl.add(it)
             listName.add(it.lastIndex.toString())
         }
 
@@ -140,17 +134,15 @@ class DetailFragment : Fragment(){
         //Add image with intent from gallery
         binding.addImageCard.setOnClickListener{
             val intent = Intent()
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
+            intent.type = "image/*";
+            intent.action = Intent.ACTION_GET_CONTENT;
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
         }
         //Delete image button
         binding.deleteImageButton.setOnClickListener{
             if(imageSlider.sliderImageCount > 1){
-//                Log.e("current url:",imageSlider.currentSlider.url)
                 args.restaurant.images.remove(imageSlider.currentSlider.url)
                 imageSlider.removeSliderAt(imageSlider.currentPosition)
-            Log.e("new size:", args.restaurant.images.size.toString())
                 viewModel.addToFavorites(args.restaurant)
             }
 
@@ -160,7 +152,6 @@ class DetailFragment : Fragment(){
             binding.buttonFavorite.isChecked = !binding.buttonFavorite.isChecked
             args.restaurant.favorite = binding.buttonFavorite.isChecked
             viewModel.addToFavorites(args.restaurant)
-            Log.e("fav", args.restaurant.favorite.toString())
 
         }
         //Open Google MAPS intent with bubble

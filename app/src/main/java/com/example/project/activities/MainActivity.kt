@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         ).build()
         //Insert Case
         val thread = Thread {
-            if ( db.userDao().getAll().size == 0){
+            if (db.userDao().getAll().isEmpty()){
                 val user = User(
                     1,
                     "Ervin",
@@ -81,9 +81,9 @@ class MainActivity : AppCompatActivity() {
                 )
                 db.userDao().insertAll(user)
             }
-
         }
         thread.start()
+        thread.join()
     }
 
 

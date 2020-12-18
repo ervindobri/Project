@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.transition.TransitionManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -129,10 +128,10 @@ class ProfileFragment : Fragment(), FavoriteAdapter.SelectedRestaurant {
         }
         binding?.profileImage?.setOnLongClickListener{
             val intent = Intent()
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
-            true;
+            intent.type = "image/*"
+            intent.action = Intent.ACTION_GET_CONTENT
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1)
+            true
         }
 
     }
@@ -142,10 +141,9 @@ class ProfileFragment : Fragment(), FavoriteAdapter.SelectedRestaurant {
         super.onActivityResult(requestCode, resultCode, data)
         // When an Image is picked
         if (requestCode == 1 && resultCode == Activity.RESULT_OK && null != data) {
-            val image: String? = data.getStringExtra("IMAGE_KEY")
             if (data.data != null) {
                 binding?.profileImage?.let { Glide.with(binding!!.root.context).load(data.data!!).into(it) }
-                viewModel.currentUser.value!!.picture = data.data!!.toString();
+                viewModel.currentUser.value!!.picture = data.data!!.toString()
                 viewModel.updateUser(
                     UserUpdate(
                         viewModel.currentUser.value!!.uid,
