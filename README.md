@@ -5,12 +5,11 @@ restaurant app
 
 Main screen:
 
-![Main screen](https://github.com/ervindobri/Project/blob/master/design/MAIN%20SCREEN.png?|width=48)
-
-
+<img align="right" width="200" src="design/MAIN%20SCREEN.png">
 Detail screen:
-![alt text](https://github.com/ervindobri/Project/blob/master/design/DETAIL%20SCREEN.png?raw=true)
-
-
+<img align="right" width="200" src="design/DETAIL%20SCREEN.png">
 Profile screen:
-![alt text](https://github.com/ervindobri/Project/blob/master/design/PROFILE%20SCREEN.png?raw=true)
+<img align="right" width="200" src="design/PROFILE%20SCREEN.png">
+
+
+
