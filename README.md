@@ -8,3 +8,5 @@ Icons, colors and layout may slightly differ in the outcome, but the idea is the
 | --------------- | --------------- | --------------- |
 | <img align="right" width="200" src="design/MAIN%20SCREEN.png"> | <img align="right" width="200" src="design/DETAIL%20SCREEN.png"> | <img align="right" width="200" src="design/PROFILE%20SCREEN.png"> |
 | List of restaurants fetched from the server | Detail of current restaurant | User profile data with favorite restaurants |
+
+![Alt Text](https://media.giphy.com/media/QCAaqb7STvc3u/giphy.gif)
