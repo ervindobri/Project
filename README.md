@@ -1,5 +1,5 @@
-# Project
-restaurant app
+# Where To Eat?
+A restaurant app for someone who can't decide (title)
 
 # Initial design made in ADOBE XD
 
