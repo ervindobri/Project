@@ -5,7 +5,7 @@ restaurant app
 
 Main screen:
 
-![alt text](https://github.com/ervindobri/Project/blob/master/design/MAIN%20SCREEN.png?raw=true|width=48)
+![Main screen](https://github.com/ervindobri/Project/blob/master/design/MAIN%20SCREEN.png?|width=48)
 
 
 Detail screen:
