@@ -1,16 +1,12 @@
-# Project
-restaurant app
+# Where To Eat?
+A restaurant app for someone who can't decide (title)
 
-# Initial design made in ADOBE XD
+# Initial concept*
+Icons, colors and layout may slightly differ in the outcome, but the idea is the same :)
 
-Main screen:
+| Main Screen | Detail Screen | Profile Screen |
+| --------------- | --------------- | --------------- |
+| <img align="right" width="200" src="design/MAIN%20SCREEN.png"> | <img align="right" width="200" src="design/DETAIL%20SCREEN.png"> | <img align="right" width="200" src="design/PROFILE%20SCREEN.png"> |
+| List of restaurants fetched from the server | Detail of current restaurant | User profile data with favorite restaurants |
 
-![alt text](https://github.com/ervindobri/Project/blob/master/design/MAIN%20SCREEN.png?raw=true|width=48)
-
-
-Detail screen:
-![alt text](https://github.com/ervindobri/Project/blob/master/design/DETAIL%20SCREEN.png?raw=true)
-
-
-Profile screen:
-![alt text](https://github.com/ervindobri/Project/blob/master/design/PROFILE%20SCREEN.png?raw=true)
+![Alt Text](https://media.giphy.com/media/QCAaqb7STvc3u/giphy.gif)
