@@ -1,7 +1,8 @@
 # Where To Eat?
 A restaurant app for someone who can't decide (title)
 
-# Initial concept
+# Initial concept*
+Icons, colors and layout may slightly differ in the outcome, but the idea is the same :)
 
 | Main Screen | Detail Screen | Profile Screen |
 | --------------- | --------------- | --------------- |
